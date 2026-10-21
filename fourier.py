@@ -496,7 +496,7 @@ def main():
     ap.add_argument("-n", "--circles", type=int, help="K: the chain has 2K+1 circles")
     ap.add_argument("--color", action="append", default=[], metavar="KEY=#RRGGBB",
                     help="colour from [colors]: background, accent, accent2, text, lines, details")
-    ap.add_argument("-o", "--output", help="directory for the PNG files")
+    ap.add_argument("-o", "--output", help="directory for the PNG files; {resolution} is replaced, e.g. out/{resolution}")
     args = ap.parse_args()
 
     with open(args.config, "rb") as f:
@@ -518,8 +518,8 @@ def main():
     with open(os.path.join(HERE, "languages", f"{language}.toml"), "rb") as f:
         lang = tomllib.load(f)
     sizes = args.resolution or general.get("resolutions", ["3440x1440"])
-    out = os.path.normpath(args.output or os.path.join(cdir, general.get("output", ".")))
-    os.makedirs(out, exist_ok=True)
+    # "{resolution}" in the output path gives a folder per resolution (e.g. one per monitor for a slideshow)
+    out = args.output or os.path.join(cdir, general.get("output", "."))
 
     for t in jobs:
         job = copy.deepcopy(general)
@@ -536,7 +536,9 @@ def main():
         shape = analyze(job["graphic"], job.get("graphic_colors", 3), job.get("extras", []))
         for size in sizes:
             W, H = map(int, size.lower().split("x"))
-            path = os.path.join(out, f"fourier-{job['name']}-{language}_{W}x{H}.png")
+            folder = os.path.normpath(out.format(resolution=f"{W}x{H}"))
+            os.makedirs(folder, exist_ok=True)
+            path = os.path.join(folder, f"fourier-{job['name']}-{language}_{W}x{H}.png")
             render(job, shape, W, H, lang, path)
             print(path)
 

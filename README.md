@@ -20,8 +20,9 @@ python3 fourier.py -g drawing.svg -t "MY // WALLPAPER" --color accent=#FF5500
 python3 fourier.py --help
 ```
 
-Output files are named `fourier-<name>-<language>_<width>x<height>.png`. They go to the directory
-set by `output` in `config.toml` (by default the parent directory).
+Output files are named `fourier-<name>-<language>_<width>x<height>.png`. They go to the directory set
+by `output` in `config.toml`. `{resolution}` in that path is replaced by e.g. `3440x1440`, so each
+resolution gets its own folder. A slideshow can then use one folder per monitor.
 
 Requirements: Python 3.11+ (tomllib), pycairo, opencv-python, numpy, Pillow and `rsvg-convert`
 (librsvg).
