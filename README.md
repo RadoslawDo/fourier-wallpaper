@@ -47,10 +47,14 @@ Requirements: Python 3.11+ (tomllib), pycairo, opencv-python, numpy, Pillow and 
   - `type = "circle"` finds the largest disc of that colour near the point. Use it when the shape
     merges with other lines.
 
-## Graphics and licences
+## Licence
 
-| Graphic | Source and licence |
+The code and the configuration and language files are under the [MIT licence](LICENSE).
+
+The graphics in `graphics/` keep their own licences. See [graphics/LICENSES.md](graphics/LICENSES.md):
+
+| Graphic | Licence |
 |---|---|
-| `cachyos.svg` | CachyOS logo, `/usr/share/icons/cachyos.svg` |
-| `tux.svg` | Tux by Larry Ewing and The GIMP (from the inkscape package, `branding/tux.svg`). Free to use with credit to the authors |
-| `heckert_gnu.svg` | GNU head by Etienne Suvasa, CC BY-SA 2.0 / Free Art License, https://www.gnu.org/graphics/heckert_gnu.svg |
+| `heckert_gnu.svg` | GNU head by Etienne Suvasa, vector version by Aurelio A. Heckert. Free Art License (also CC BY-SA 2.0 / GPLv3+) |
+| `tux.svg` | Tux by Larry Ewing and The GIMP, from the Inkscape package. Free to use with credit to the authors |
+| `cachyos.svg` | CachyOS logo from `cachyos-settings` (GPL-1.0-only). Also a CachyOS trademark |
