@@ -1,0 +1,83 @@
+# Fourier wallpaper generator – configuration (fourier.py reads it from this directory by default).
+# Values from [general] and [colors] can be overridden on the command line (python3 fourier.py --help).
+
+[general]
+language = "pl"                                # file languages/<language>.toml
+resolutions = ["3440x1440", "1920x1200"]       # every wallpaper in every resolution
+output = ".."                                  # directory for the PNG files (relative to this file)
+title = "AMBERFROST // FOURIER"                # large text on the title block in the bottom-right corner
+revision = "A  2026"
+font = "Hack"                                  # must have Σ ∫ π (Hack, DejaVu Sans Mono…)
+circles = 40                                   # default n = −40…40, i.e. 81 circles
+reconstructions = [1, 3, 8, 30]                # N in the right-hand column (2N+1 circles)
+graphic_colors = 3                             # how many colours to split the graphic into when looking for inner lines
+
+[colors]                                       # AmberFrost palette (Noctalia)
+background = "#1B1B1B"
+accent = "#FFAD00"                             # trace, headers, formulas, n > 0
+accent2 = "#AABBFF"                            # chain of circles, n < 0
+text = "#BEBEBE"
+lines = "#4A4A4A"                              # target outline (dashed), header rules
+details = "#333333"                            # inner lines of the graphic
+
+# ---------------------------------------------------------------------------------------------
+# Wallpapers. graphic – an SVG file (relative to this file). Outline = outer contour of the graphic;
+# separate small shapes next to it (like logo dots) are found automatically. Small shapes INSIDE
+# (pupils) have to be pointed to in "extras": x, y – position as a fraction of the graphic's
+# width/height, type:
+#   "shape"  – the whole single-colour shape at that point (circle or ellipse),
+#   "circle" – the largest disc that fits in that colour (when the shape merges with other lines).
+# texts.<language>: noun (in Polish in the genitive case), closing (last paragraph of the theory),
+# spectrum (note under the spectrum header), author (credit above the title block) – all optional.
+
+[[wallpaper]]
+name = "cachyos"
+graphic = "graphics/cachyos.svg"              # /usr/share/icons/cachyos.svg
+tag = "CACHYOS"
+[wallpaper.texts.en]
+noun = "logo"
+closing = "A circle is exactly one term, so each of the three dots of the logo is drawn by a single vector. The sharp corners of the “C” need many – the more circles, the sharper they get (right-hand column)."
+spectrum = "falls off as 1/n², like for any polygon"
+[wallpaper.texts.pl]
+noun = "logo"
+closing = "Okrąg to dokładnie jeden składnik, dlatego każdą z trzech kropek logo rysuje jeden wektor. Ostre narożniki „C” wymagają wielu – im więcej okręgów, tym ostrzejsze (kolumna po prawej)."
+spectrum = "maleje jak 1/n², jak w każdym wielokącie"
+
+[[wallpaper]]
+name = "tux"
+graphic = "graphics/tux.svg"                  # from the inkscape package (branding/tux.svg)
+tag = "TUX"
+graphic_colors = 5
+reconstructions = [1, 4, 12, 40]
+extras = [{ x = 0.4196, y = 0.2913, type = "shape" }, { x = 0.5433, y = 0.2900, type = "shape" }]
+colors = { details = "#4A4A4A" }
+[wallpaper.texts.en]
+noun = "penguin"
+closing = "An ellipse is exactly two terms (n = 1 and n = −1), so each pupil is drawn by two vectors. The smooth outline of the penguin needs only a few dozen circles (right-hand column)."
+spectrum = "smooth shape – the spectrum falls off quickly"
+author = "Tux: Larry Ewing and The GIMP"
+[wallpaper.texts.pl]
+noun = "pingwina"
+closing = "Elipsa to dokładnie dwa składniki (n = 1 i n = −1), dlatego każdą źrenicę rysują dwa wektory. Gładki obrys pingwina wystarcza kilkadziesiąt okręgów (kolumna po prawej)."
+spectrum = "gładki kształt – widmo szybko maleje"
+author = "Tux: Larry Ewing i The GIMP"
+
+[[wallpaper]]
+name = "gnu"
+graphic = "graphics/heckert_gnu.svg"          # https://www.gnu.org/graphics/heckert_gnu.svg
+tag = "GNU"
+graphic_colors = 2
+circles = 150
+reconstructions = [2, 10, 40, 150]
+extras = [{ x = 0.4814, y = 0.4050, type = "circle" }, { x = 0.6610, y = 0.4013, type = "circle" }]
+colors = { details = "#464646" }
+[wallpaper.texts.en]
+noun = "gnu head"
+closing = "A circle is one term – each pupil is drawn by a single vector. The jagged horns and beard need hundreds of circles: with a small N only a smooth blob remains (right-hand column)."
+spectrum = "sharp teeth of the horns – the spectrum falls off slowly"
+author = "GNU head: Etienne Suvasa, CC BY-SA 2.0"
+[wallpaper.texts.pl]
+noun = "głowy gnu"
+closing = "Okrąg to jeden składnik – każdą źrenicę rysuje jeden wektor. Postrzępione rogi i broda potrzebują setek okręgów: przy małym N zostaje gładka plama (kolumna po prawej)."
+spectrum = "ostre ząbki rogów – widmo maleje powoli"
+author = "głowa GNU: Etienne Suvasa, CC BY-SA 2.0"

@@ -1,0 +1,34 @@
+# Wallpaper texts in English. New language: copy this file as <code>.toml and translate the values.
+# {names} in braces are filled in by the program; in formulas _{…} is a subscript, ^{…} a superscript.
+
+# plural of "circle": "en" = one / other (forms: singular, plural), "pl" = Polish three forms
+plural_rule = "en"
+circle = ["circle", "circles"]
+
+theory_header = "FOURIER SERIES"
+# {noun} – set per wallpaper ("logo", "penguin"), default_noun otherwise
+theory_1 = "The outline of the {noun} is a closed curve. We write each of its points as a complex number:"
+theory_2 = "Any such curve can be built from circles rotating at constant speeds – the n-th circle makes n turns while the point travels once around the curve:"
+theory_3 = "The coefficients are the radii and starting angles of the circles:"
+theory_4 = "Here: 2048 outline points → FFT → {count} {circles} (n = −{K}…{K}). The chain starts at the centroid of the outline (the n = 0 term), and its tip draws the trace."
+theory_5 = "n > 0: counter-clockwise rotation, n < 0: clockwise."
+default_noun = "shape"
+# last paragraph of the theory when the wallpaper has none of its own (depends on the kind of small shapes)
+closing_circle = "A circle is exactly one term, so each small circle is drawn by a single vector."
+closing_ellipse = "An ellipse is exactly two terms (n = 1 and n = −1), so each ellipse is drawn by two vectors."
+closing_rest = "The more circles, the more faithful the outline (right-hand column)."
+
+square_header = "EXAMPLE: SQUARE WAVE"
+gibbs = "Gibbs phenomenon: ≈ 9% of the jump – does not vanish as N grows"
+terms = "terms:"
+
+spectrum_header = "OUTLINE SPECTRUM"
+spectrum_caption = "|c_{n}| (log scale), n = −30…30"
+
+reconstruction_header = "RECONSTRUCTION"
+
+label_circle = "1 circle: c_{1}e^{2πit}"
+label_ellipse = "ellipse = 2 circles: c_{1} and c_{-1}"
+
+sheet = "SHEET 1/1"
+revision = "REV."
