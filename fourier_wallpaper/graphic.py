@@ -10,9 +10,12 @@ from typing import TYPE_CHECKING, Any
 import cv2
 import numpy as np
 import numpy.typing as npt
-from cv2.typing import MatLike
 
-if TYPE_CHECKING:                    # config imports the modules, which import this file
+# config imports the modules, which import this file; cv2.typing is only in the pip package of OpenCV,
+# not in e.g. Arch's python-opencv
+if TYPE_CHECKING:
+    from cv2.typing import MatLike
+
     from .config import WallpaperSpec
 
 Point = tuple[float, float]          # pixels of the raster (see raster())
