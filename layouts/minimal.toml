@@ -1,0 +1,13 @@
+# Only the drawing and the title block – a calm wallpaper.
+# A layout is applied on top of config.toml and the wallpaper's file; it may also override other
+# sections ([colors], [general]…). The modules and their keys are described in config.toml.
+
+[layout]
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+reconstruction = { enabled = false }
+drawing        = { x = "20%", y = "12%", w = "60%", h = "72%" }
+
+[layout_ultrawide]
+drawing        = { x = "25%", y = "12%", w = "50%", h = "74%" }

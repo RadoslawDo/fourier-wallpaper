@@ -1,0 +1,11 @@
+# Reconstructions in a row along the bottom edge, the title block in the top-right corner,
+# the drawing above the row. Theory, square wave and spectrum stay where config.toml puts them.
+
+[layout]
+reconstruction = { x = -60, y = -50, w = "67%", h = 330, direction = "row" }
+title          = { x = -60, y = 40 }
+drawing        = { x = "33%", y = 170, w = "64%", h = 860 }
+
+[layout_ultrawide]
+reconstruction = { x = -60, y = -50, w = 1840, h = 400 }
+drawing        = { x = 1540, y = 170, w = 1840, h = 780 }

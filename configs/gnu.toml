@@ -1,0 +1,25 @@
+# GNU head. Overrides ../config.toml (the keys are described in cachyos.toml).
+
+[general]
+circles = 150
+reconstructions = [2, 10, 40, 150]
+
+[colors]
+details = "#464646"
+
+[wallpaper]
+name = "gnu"
+graphic = "../graphics/heckert_gnu.svg"       # https://www.gnu.org/graphics/heckert_gnu.svg
+tag = "GNU"
+graphic_colors = 2
+extras = [{ x = 0.4814, y = 0.4050, type = "circle" }, { x = 0.6610, y = 0.4013, type = "circle" }]
+[wallpaper.texts.en]
+noun = "gnu head"
+closing = "A circle is one term – each pupil is drawn by a single vector. The jagged horns and beard need hundreds of circles: with a small N only a smooth blob remains (right-hand column)."
+spectrum = "sharp teeth of the horns – the spectrum falls off slowly"
+author = "GNU head: Etienne Suvasa, CC BY-SA 2.0"
+[wallpaper.texts.pl]
+noun = "głowy gnu"
+closing = "Okrąg to jeden składnik – każdą źrenicę rysuje jeden wektor. Postrzępione rogi i broda potrzebują setek okręgów: przy małym N zostaje gładka plama (kolumna po prawej)."
+spectrum = "ostre ząbki rogów – widmo maleje powoli"
+author = "głowa GNU: Etienne Suvasa, CC BY-SA 2.0"

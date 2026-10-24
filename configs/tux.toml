@@ -1,0 +1,24 @@
+# Tux. Overrides ../config.toml (the keys are described in cachyos.toml).
+
+[general]
+reconstructions = [1, 4, 12, 40]
+
+[colors]
+details = "#4A4A4A"
+
+[wallpaper]
+name = "tux"
+graphic = "../graphics/tux.svg"               # from the inkscape package (branding/tux.svg)
+tag = "TUX"
+graphic_colors = 5
+extras = [{ x = 0.4196, y = 0.2913, type = "shape" }, { x = 0.5433, y = 0.2900, type = "shape" }]
+[wallpaper.texts.en]
+noun = "penguin"
+closing = "An ellipse is exactly two terms (n = 1 and n = −1), so each pupil is drawn by two vectors. The smooth outline of the penguin needs only a few dozen circles (right-hand column)."
+spectrum = "smooth shape – the spectrum falls off quickly"
+author = "Tux: Larry Ewing and The GIMP"
+[wallpaper.texts.pl]
+noun = "pingwina"
+closing = "Elipsa to dokładnie dwa składniki (n = 1 i n = −1), dlatego każdą źrenicę rysują dwa wektory. Gładki obrys pingwina wystarcza kilkadziesiąt okręgów (kolumna po prawej)."
+spectrum = "gładki kształt – widmo szybko maleje"
+author = "Tux: Larry Ewing i The GIMP"

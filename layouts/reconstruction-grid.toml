@@ -1,0 +1,18 @@
+# The whole screen covered by reconstructions with a growing N, in a grid – nothing else.
+# 20 steps: 5 × 4 cells; on an ultrawide screen 8 × 3 cells, of which 4 in the top-left corner stay
+# empty for the desktop widget (cells are numbered row by row from 0). Without a widget there:
+# empty = [] and 4 more steps in "reconstructions".
+
+[general]
+reconstructions = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 50, 60]
+
+[layout]
+drawing        = { enabled = false }
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+title          = { enabled = false }
+reconstruction = { x = 60, y = 40, w = -120, h = -100, columns = 5 }
+
+[layout_ultrawide]
+reconstruction = { columns = 8, empty = [0, 1, 8, 9] }

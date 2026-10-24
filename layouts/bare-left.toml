@@ -1,0 +1,7 @@
+# Like bare.toml (only the sheet and the drawing, no texts), but the drawing at the left edge of the screen.
+# On an ultrawide screen too – the top of the drawing goes under the desktop widget there.
+extends = "bare.toml"
+
+[layout]
+drawing = { x = 120, w = "50%", align = "left" }
+

@@ -1,0 +1,14 @@
+# Only the sheet (background and grid) and the drawing in the middle – no texts (also none on the drawing),
+# no title block. bare-left.toml / bare-right.toml: the same with the drawing at the left / right edge.
+# To drop the grid as well: grid = { enabled = false }.
+
+[layout]
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+reconstruction = { enabled = false }
+title          = { enabled = false }
+drawing        = { x = "15%", y = "8%", w = "70%", h = "84%", labels = false }
+
+[layout_ultrawide]
+drawing        = { x = "20%", y = "8%", w = "60%", h = "84%" }

@@ -1,11 +1,17 @@
-# Fourier wallpaper generator – configuration (fourier.py reads it from this directory by default).
+# Fourier wallpaper generator – the defaults. Other files override them, key by key, in this order:
+#   config.toml  →  configs/<wallpaper>.toml (-c)  →  layouts/<layout>.toml (-L)  →  the command line.
+# A wallpaper file has a [wallpaper] table (the graphic and its texts); any file can have any section from
+# here. A file can also build on another one with extends = "other.toml" (relative to that file).
 # Values from [general] and [colors] can be overridden on the command line (python3 fourier.py --help).
 
 [general]
-language = "pl"                                # file languages/<language>.toml
+language = ["pl", "en"]                        # files languages/<language>.toml; one language: "pl"
 resolutions = ["3440x1440", "1920x1200"]       # every wallpaper in every resolution
+layouts = ["default"]                          # every wallpaper in every layout: names of files in layouts/,
+                                               # "default" = no file (only this one and the wallpaper's)
 output = "../{resolution}"                     # directory for the PNG files (relative to this file);
-                                               # {resolution} → a folder per resolution, e.g. ../3440x1440
+                                               # {resolution} → a folder per resolution, e.g. ../3440x1440;
+                                               # file name: fourier-<wallpaper>[-<layout>]-<language>_<resolution>.png
 title = "AMBERFROST // FOURIER"                # large text on the title block in the bottom-right corner
 revision = "A  2026"
 font = "Hack"                                  # must have Σ ∫ π (Hack, DejaVu Sans Mono…)
@@ -22,63 +28,35 @@ lines = "#4A4A4A"                              # target outline (dashed), header
 details = "#333333"                            # inner lines of the graphic
 
 # ---------------------------------------------------------------------------------------------
-# Wallpapers. graphic – an SVG file (relative to this file). Outline = outer contour of the graphic;
-# separate small shapes next to it (like logo dots) are found automatically. Small shapes INSIDE
-# (pupils) have to be pointed to in "extras": x, y – position as a fraction of the graphic's
-# width/height, type:
-#   "shape"  – the whole single-colour shape at that point (circle or ellipse),
-#   "circle" – the largest disc that fits in that colour (when the shape merges with other lines).
-# texts.<language>: noun (in Polish in the genitive case), closing (last paragraph of the theory),
-# spectrum (note under the spectrum header), author (credit above the title block) – all optional.
+# Modules of the wallpaper and their boxes. Keys (all optional – missing ones keep the defaults below):
+#   enabled = false      – the module is not drawn (also: --hide MODULE / --show MODULE on the command line),
+#   x, y                 – top-left corner, w, h – size: a number is px on a 1440 px high screen (scaled with
+#                          the height, so 1920x1200 gets × 0.83), "N%" is percent of the screen width (x, w)
+#                          or height (y, h); a negative x / y = distance of the module's right / bottom edge
+#                          from the right / bottom edge of the screen; a negative w / h = the screen width /
+#                          height minus that much (w = -120: full width less 2 × 60),
+#   scale = 1.2          – text and line sizes inside the module,
+#   labels = false       – drawing only: no c₀, c₁… and no label at the small shapes,
+#   align = "left"       – drawing only: the graphic at the left / right edge of its box (default "center"),
+#   direction = "row"    – reconstruction only: frames side by side instead of one above the other,
+#   columns = 5          – reconstruction only: frames in a grid with that many columns,
+#   empty = [0, 1]       – reconstruction only: grid cells left empty (numbered row by row from 0).
+# grid has only "enabled"; theory has no h (the text sets the height); drawing – the graphic is fitted into
+# the box. [layout_ultrawide] is used on top of [layout] when width > 2 × height (the top-left corner stays
+# empty there – a desktop widget sits there). A wallpaper config in configs/ can have its own [layout] and
+# [layout_ultrawide], e.g. [layout] spectrum = { enabled = false } – merged over the tables here.
 
-[[wallpaper]]
-name = "cachyos"
-graphic = "graphics/cachyos.svg"              # /usr/share/icons/cachyos.svg
-tag = "CACHYOS"
-[wallpaper.texts.en]
-noun = "logo"
-closing = "A circle is exactly one term, so each of the three dots of the logo is drawn by a single vector. The sharp corners of the “C” need many – the more circles, the sharper they get (right-hand column)."
-spectrum = "falls off as 1/n², like for any polygon"
-[wallpaper.texts.pl]
-noun = "logo"
-closing = "Okrąg to dokładnie jeden składnik, dlatego każdą z trzech kropek logo rysuje jeden wektor. Ostre narożniki „C” wymagają wielu – im więcej okręgów, tym ostrzejsze (kolumna po prawej)."
-spectrum = "maleje jak 1/n², jak w każdym wielokącie"
+[layout]
+grid           = { enabled = true }
+drawing        = { x = "34.5%", y = "20%", w = "40%", h = "52%" }
+theory         = { x = 50, y = 58, w = 560 }
+square         = { x = 50, y = 808, w = 560, h = 252 }          # square-wave example
+spectrum       = { x = 50, y = 1098, w = 560, h = 252 }
+reconstruction = { x = -60, y = 78, w = 500, h = 1130 }         # one frame per item of "reconstructions"
+title          = { x = -60, y = -40, w = 420, h = 96 }          # title block (author credit above it)
 
-[[wallpaper]]
-name = "tux"
-graphic = "graphics/tux.svg"                  # from the inkscape package (branding/tux.svg)
-tag = "TUX"
-graphic_colors = 5
-reconstructions = [1, 4, 12, 40]
-extras = [{ x = 0.4196, y = 0.2913, type = "shape" }, { x = 0.5433, y = 0.2900, type = "shape" }]
-colors = { details = "#4A4A4A" }
-[wallpaper.texts.en]
-noun = "penguin"
-closing = "An ellipse is exactly two terms (n = 1 and n = −1), so each pupil is drawn by two vectors. The smooth outline of the penguin needs only a few dozen circles (right-hand column)."
-spectrum = "smooth shape – the spectrum falls off quickly"
-author = "Tux: Larry Ewing and The GIMP"
-[wallpaper.texts.pl]
-noun = "pingwina"
-closing = "Elipsa to dokładnie dwa składniki (n = 1 i n = −1), dlatego każdą źrenicę rysują dwa wektory. Gładki obrys pingwina wystarcza kilkadziesiąt okręgów (kolumna po prawej)."
-spectrum = "gładki kształt – widmo szybko maleje"
-author = "Tux: Larry Ewing i The GIMP"
-
-[[wallpaper]]
-name = "gnu"
-graphic = "graphics/heckert_gnu.svg"          # https://www.gnu.org/graphics/heckert_gnu.svg
-tag = "GNU"
-graphic_colors = 2
-circles = 150
-reconstructions = [2, 10, 40, 150]
-extras = [{ x = 0.4814, y = 0.4050, type = "circle" }, { x = 0.6610, y = 0.4013, type = "circle" }]
-colors = { details = "#464646" }
-[wallpaper.texts.en]
-noun = "gnu head"
-closing = "A circle is one term – each pupil is drawn by a single vector. The jagged horns and beard need hundreds of circles: with a small N only a smooth blob remains (right-hand column)."
-spectrum = "sharp teeth of the horns – the spectrum falls off slowly"
-author = "GNU head: Etienne Suvasa, CC BY-SA 2.0"
-[wallpaper.texts.pl]
-noun = "głowy gnu"
-closing = "Okrąg to jeden składnik – każdą źrenicę rysuje jeden wektor. Postrzępione rogi i broda potrzebują setek okręgów: przy małym N zostaje gładka plama (kolumna po prawej)."
-spectrum = "ostre ząbki rogów – widmo maleje powoli"
-author = "głowa GNU: Etienne Suvasa, CC BY-SA 2.0"
+[layout_ultrawide]
+drawing        = { x = "41.5%", y = "17%", w = "44%", h = "60%" }
+theory         = { x = 960, y = 78, w = 520 }
+square         = { x = 60, y = 948, w = 660, h = 392 }
+spectrum       = { x = 790, y = 948, w = 690, h = 392 }

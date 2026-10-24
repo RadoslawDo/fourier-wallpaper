@@ -1,0 +1,6 @@
+# Like bare.toml (only the sheet and the drawing, no texts), but the drawing at the right edge of the screen.
+extends = "bare.toml"
+
+[layout]
+drawing = { x = -120, w = "50%", align = "right" }
+
