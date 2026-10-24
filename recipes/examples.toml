@@ -1,0 +1,31 @@
+# Examples: python3 fourier.py examples (or recipes/examples.toml). Keys are described in default.toml.
+# The files go to the output folder from ../config.toml; to try them elsewhere: -o /tmp/fourier/{resolution}.
+
+[general]
+language = ["pl"]
+
+# minimal: only the sheet and the GNU head in the middle, at the left and at the right edge
+[[wallpapers]]
+config = "gnu"
+layouts = ["bare", "bare-left", "bare-right"]
+
+# the whole screen covered by reconstructions of Tux in a grid
+[[wallpapers]]
+config = "tux"
+layouts = ["reconstruction-grid"]
+
+# a variant: Tux in other colours, without the spectrum, with more circles – it needs its own name
+[[wallpapers]]
+config = "tux"
+name = "tux-ice"
+circles = 60
+colors = { accent = "#7FD4FF", accent2 = "#B48CFF" }
+layout = { spectrum = { enabled = false } }
+
+# a graphic without a file in configs/ (name, graphic and tag are then required)
+[[wallpapers]]
+graphic = "../graphics/cachyos.svg"
+name = "cachyos-plain"
+tag = "CACHYOS"
+layouts = ["minimal"]
+language = ["en"]

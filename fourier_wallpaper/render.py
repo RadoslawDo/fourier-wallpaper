@@ -51,8 +51,7 @@ def generate(job: Job) -> None:
             lang = tomllib.load(f)
         for screen in job.screens:
             # "{resolution}" in the output path gives a folder per resolution (e.g. one per monitor for a slideshow)
-            folder = os.path.normpath(job.output.format(resolution=str(screen)))
-            os.makedirs(folder, exist_ok=True)
-            path = os.path.join(folder, job.file_name(language, screen))
+            os.makedirs(job.folder(screen), exist_ok=True)
+            path = job.path(language, screen)
             Renderer(job, series, screen, language, lang).render(path)
             print(path)

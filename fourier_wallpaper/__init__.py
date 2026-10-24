@@ -9,14 +9,15 @@ From the graphic the program takes:
     ones inside (e.g. pupils) are pointed to in the config; a circle is drawn by 1 term,
     an ellipse by 2 (n = 1 and n = −1).
 
-Parameters: config.toml (the defaults), overridden by configs/<name>.toml (one per wallpaper) and
+Parameters: config.toml (the defaults), overridden by a recipe (recipes/<name>.toml – which wallpapers to
+make, in which layouts, languages and resolutions), configs/<name>.toml (one per wallpaper) and
 layouts/<name>.toml (where the modules go: theory, square wave, spectrum, reconstructions… – each can be
 turned off, moved and resized); texts: languages/<code>.toml. On an ultrawide screen (width > 2 × height)
 the top-left corner stays empty by default – a desktop widget sits there.
 
 Usage:
-  python3 fourier.py                          all wallpapers (every config in configs/)
-  python3 fourier.py -c tux -l pl             one wallpaper (configs/tux.toml), in Polish
-  python3 fourier.py -c tux -L minimal        in another layout (layouts/minimal.toml)
+  python3 fourier.py                          the wallpapers of recipes/default.toml
+  python3 fourier.py examples                 the wallpapers of recipes/examples.toml
+  python3 fourier.py configs/tux.toml -l pl   one wallpaper, in Polish
   python3 fourier.py -g drawing.svg -r 2560x1440 -t "MY // WALLPAPER" --color accent=#FF5500
 """

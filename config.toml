@@ -1,5 +1,6 @@
 # Fourier wallpaper generator – the defaults. Other files override them, key by key, in this order:
-#   config.toml  →  configs/<wallpaper>.toml (-c)  →  layouts/<layout>.toml (-L)  →  the command line.
+#   config.toml  →  the recipe  →  configs/<wallpaper>.toml  →  layouts/<layout>.toml  →  the recipe's entry
+#   →  the command line.   A recipe (recipes/*.toml) says which wallpapers to make – see recipes/default.toml.
 # A wallpaper file has a [wallpaper] table (the graphic and its texts); any file can have any section from
 # here. A file can also build on another one with extends = "other.toml" (relative to that file).
 # Values from [general] and [colors] can be overridden on the command line (python3 fourier.py --help).

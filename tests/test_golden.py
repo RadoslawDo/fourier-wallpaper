@@ -38,13 +38,13 @@ CASES = [f"{res}/fourier-{w}{'' if layout == 'default' else '-' + layout}-{lang}
 def generated(tmp_path_factory: pytest.TempPathFactory, request: pytest.FixtureRequest) -> Path:
     """All the wallpapers, generated once; returns the folder they are in (or tests/golden with --update-golden)."""
     out = tmp_path_factory.mktemp("wallpapers")
-    for w in WALLPAPERS:
-        for lang in ("pl", "en"):
-            layouts = sorted({layout for w_, layout, l_ in RUNS if w_ == w and l_ == lang})
-            cmd = [sys.executable, os.path.join(ROOT, "fourier.py"), "-c", w, "-l", lang,
-                   "-o", os.path.join(out, "{resolution}")]
-            cmd += [a for layout in layouts for a in ("-L", layout)] + [a for r in RESOLUTIONS for a in ("-r", r)]
-            subprocess.run(cmd, check=True, capture_output=True, text=True)
+    recipe = out / "golden.toml"           # every run above, as one recipe
+    recipe.write_text("".join(f'[[wallpapers]]\nconfig = "{w}"\nlayouts = {layouts!r}\nlanguage = ["{lang}"]\n'
+                              for w in WALLPAPERS for lang in ("pl", "en")
+                              for layouts in [sorted({lt for w_, lt, l_ in RUNS if w_ == w and l_ == lang})]))
+    cmd = [sys.executable, os.path.join(ROOT, "fourier.py"), str(recipe), "-o", os.path.join(out, "{resolution}")]
+    subprocess.run(cmd + [a for r in RESOLUTIONS for a in ("-r", r)], check=True, capture_output=True, text=True)
+    recipe.unlink()
     if request.config.getoption("--update-golden"):
         shutil.rmtree(GOLDEN, ignore_errors=True)
         shutil.copytree(out, GOLDEN)

@@ -1,5 +1,5 @@
 # CachyOS logo. ../config.toml holds the defaults – any section from there ([general], [colors], [layout]…)
-# can be overridden here, key by key. A layout from layouts/ (-L) is applied on top of this file.
+# can be overridden here, key by key. A layout from layouts/ (layouts in a recipe) is applied on top of it.
 #
 # [wallpaper] keys: name (in the file name), tag (on the title block), graphic – an SVG file (relative
 # to this file). Outline = outer contour of the graphic; separate small shapes next to it (like logo

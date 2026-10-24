@@ -1,0 +1,22 @@
+# The default recipe: python3 fourier.py (without a recipe) makes these wallpapers.
+#
+# A recipe says which wallpapers to make. Its sections ([general], [colors], [layout]…) are the same as in
+# ../config.toml and apply to every wallpaper of the recipe, e.g. [general] resolutions, language, output.
+# Each [[wallpapers]] entry is one wallpaper:
+#   config  = "tux"                    a file in configs/ (or a path relative to this file)
+#   layouts = ["default", "minimal"]   files in layouts/; "default" = none (without it: layouts in [general])
+# and any key of a config file, without its section – it goes where it belongs and wins over the files:
+#   name, graphic, tag, extras, texts, circles, reconstructions…  ([wallpaper]; graphic relative to this file)
+#   language, resolutions, output                                 ([general])
+#   colors = { accent = "#FF5500" }, layout = { spectrum = { enabled = false } }, layout_ultrawide = {…}
+# A wallpaper can also be given without a file in configs/: graphic, name and tag instead of config.
+# See examples.toml.
+
+[[wallpapers]]
+config = "cachyos"
+
+[[wallpapers]]
+config = "gnu"
+
+[[wallpapers]]
+config = "tux"

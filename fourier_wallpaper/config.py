@@ -12,8 +12,8 @@ from .layout import LAYOUT, LAYOUT_ULTRAWIDE, check_layout
 from .tables import Table, is_list, is_table
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the project folder
-CONFIGS = os.path.join(ROOT, "configs")          # one file per wallpaper (-c <name>)
-LAYOUTS = os.path.join(ROOT, "layouts")          # layouts of the modules (-L <name>)
+CONFIGS = os.path.join(ROOT, "configs")          # one file per wallpaper (config = "<name>" in a recipe)
+LAYOUTS = os.path.join(ROOT, "layouts")          # layouts of the modules (layouts = ["<name>"] in a recipe)
 
 Chain = list[tuple[str, Table]]                  # the files of a config, base first: (path, contents)
 
@@ -40,9 +40,10 @@ def config_chain(path: str) -> Chain:
     return (config_chain(os.path.join(cdir, base)) if base else []) + [(os.path.abspath(path), cfg)]
 
 
-def find_config(name: str, folder: str) -> str:
-    """-c / -L: a path, or a bare name of a file in the folder (e.g. "tux" → configs/tux.toml)."""
-    for path in (name, os.path.join(folder, name), os.path.join(folder, name + ".toml")):
+def find_config(name: str, folder: str, relative_to: str = ".") -> str:
+    """A path (relative to relative_to), or a bare name of a file in the folder (e.g. "tux" → configs/tux.toml)."""
+    name = os.path.expanduser(name)
+    for path in (os.path.join(relative_to, name), os.path.join(folder, name), os.path.join(folder, name + ".toml")):
         if os.path.isfile(path):
             return path
     sys.exit(f"not found: {name!r} (neither a file nor {os.path.relpath(folder, ROOT)}/{name}.toml)")
@@ -175,6 +176,12 @@ class Job:
 
     def file_name(self, language: str, screen: Screen) -> str:
         return f"fourier-{self.spec.name}{self.suffix}-{language}_{screen}.png"
+
+    def folder(self, screen: Screen) -> str:
+        return os.path.normpath(self.output.format(resolution=str(screen)))
+
+    def path(self, language: str, screen: Screen) -> str:
+        return os.path.join(self.folder(screen), self.file_name(language, screen))
 
 
 def _check(value: Any, ok: Callable[[Any], object], where: str, what: str) -> Any:
