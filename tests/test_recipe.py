@@ -16,6 +16,13 @@ def run(tmp_path: Path, recipe: str) -> subprocess.CompletedProcess[str]:
                            "-o", str(tmp_path / "out")], capture_output=True, text=True, check=False)
 
 
+def test_template(tmp_path: Path) -> None:
+    """The template for new users works as it is."""
+    subprocess.run([sys.executable, os.path.join(ROOT, "fourier.py"), "template", "-r", "64x40", "-f", "png",
+                    "-o", str(tmp_path)], check=True, capture_output=True, text=True)
+    assert [p.name for p in tmp_path.iterdir()] == ["fourier-my-wallpaper-en_64x40.png"]
+
+
 @pytest.mark.parametrize("recipe, message", [
     ('[[wallpapers]]\nconfig = "tux"\nlayout_typo = {}\n', "unknown keys ['layout_typo']"),
     ('[[wallpapers]]\nconfig = "tux"\n[[wallpapers]]\nconfig = "tux"\ncircles = 10\n', "both make"),

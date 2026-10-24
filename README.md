@@ -49,6 +49,25 @@ Output files are named `fourier-<name>[-<layout>]-<language>_<width>x<height>.pn
 the other recipes, in `config.toml`. `{resolution}` in that path is replaced by e.g. `3440x1440`, so
 each resolution gets its own folder. A slideshow can then use one folder per monitor.
 
+## Your own wallpaper
+
+`recipes/template.toml` is a template for your own wallpaper: every option is in it, explained and
+switched off with `#` – remove the `#` to use one. As it is, it makes the ghost from `graphics/ghost.svg`:
+
+```sh
+python3 fourier.py template               # → output/1920x1080/fourier-my-wallpaper-en_1920x1080.png
+```
+
+To make your own, copy it in `recipes/` (the paths in it are relative to the file), change `graphic`,
+`name` and `tag`, and uncomment what you want to change:
+
+```sh
+cp recipes/template.toml recipes/my-wallpaper.toml
+python3 fourier.py my-wallpaper
+```
+
+How to prepare the graphic: [Adding a graphic](docs/adding-a-graphic.md).
+
 ## Documentation
 
 - [Configuration](docs/configuration.md) – recipes, the config files and the order in which they

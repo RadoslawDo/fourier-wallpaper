@@ -1,0 +1,192 @@
+# =====================================================================================================
+#  template.toml – a starting point for your own wallpaper
+# =====================================================================================================
+#
+#  Try it as it is:
+#      python3 fourier.py template
+#  It makes the ghost from graphics/ghost.svg in output/<resolution>/ (in the project folder).
+#
+#  Make it yours:
+#      cp recipes/template.toml recipes/my-wallpaper.toml
+#      python3 fourier.py my-wallpaper
+#  then change "graphic", "name" and "tag" below and uncomment whatever else you want to change.
+#  Keep the copy in recipes/: paths in this file (graphic, output) are relative to the file itself.
+#
+#  How to read this file:
+#    - Lines starting with "#" are comments. An option written as "# key = value" is switched off: the
+#      program uses its default, and the value shown IS that default (unless the comment says otherwise).
+#      Remove the "# " in front of it to switch it on, then change the value.
+#    - Every setting not written here comes from ../config.toml (the defaults for all wallpapers).
+#    - TOML: texts in "quotes", lists in [brackets], tables in { braces }; a [section] header starts a
+#      group of options that lasts until the next header.
+#    - A mistake (an unknown key, a wrong value) stops the program with a message saying what is wrong,
+#      before anything is drawn.
+#    - Options on the command line win over this file, e.g. a quick look at a small size:
+#          python3 fourier.py template -r 1280x800 -l en -f png
+#
+#  More: docs/configuration.md (all the files), docs/layout.md (where things go on the screen),
+#  docs/adding-a-graphic.md (how to prepare a graphic), docs/how-to.md.
+
+
+# -----------------------------------------------------------------------------------------------------
+#  [general] – what files to make
+# -----------------------------------------------------------------------------------------------------
+[general]
+
+# Languages of the texts: files in languages/ ("en", "pl"). One file per language.
+language = ["en"]
+# language = ["en", "pl"]
+
+# Screen sizes, WIDTHxHEIGHT – one file per size. The layout follows the height: everything is sized for
+# a 1440 px high screen and scaled, so 1080 px looks the same, only smaller. A screen more than twice as
+# wide as high (3440x1440, 5120x1440) is "ultrawide" and also uses [layout_ultrawide] below.
+resolutions = ["1920x1080"]
+# resolutions = ["2560x1440", "1920x1080"]
+# resolutions = ["3440x1440"]                 # 21:9
+# resolutions = ["3840x2160"]                 # 4K
+
+# Where the files go (relative to this file). {resolution} is replaced by e.g. 1920x1080, so each size
+# gets its own folder. File names: fourier-<name>-<language>_<resolution>.<format>
+# output = "../output/{resolution}"
+# output = "~/Pictures/Wallpapers/{resolution}"
+
+# File format: "png", "webp", "svg" (vector, sharp at any size), "pdf" – or several, e.g. ["png", "svg"].
+# format = "png"
+# quality = "lossless"                        # WebP only: "lossless", or 1–100 (lossy, smaller files)
+
+# Text on the large title block (bottom right) and the small field next to the tag.
+# title = "FOURIER WALLPAPER"
+# revision = "A  2026"
+
+# Font of all texts. It must have the characters Σ ∫ π (Hack, DejaVu Sans Mono, Liberation Mono…);
+# list the installed ones with: fc-list : family
+# font = "Hack"
+
+# Circles of the drawing: n = −40…40, i.e. 2 × 40 + 1 = 81 circles. More = a more exact outline.
+# circles = 40
+
+# One reconstruction frame per number: the outline made of only N terms (2N + 1 circles).
+# reconstructions = [1, 3, 8, 30]
+# reconstructions = [1, 2, 4, 8, 16, 32]
+
+
+# -----------------------------------------------------------------------------------------------------
+#  [colors] – the palette, "#RRGGBB"
+# -----------------------------------------------------------------------------------------------------
+[colors]
+# background = "#1B1B1B"
+# accent     = "#FFAD00"                      # the trace, headers, formulas, circles with n > 0
+# accent2    = "#AABBFF"                      # the chain of circles, n < 0
+# text       = "#BEBEBE"
+# lines      = "#4A4A4A"                      # the target outline (dashed), header rules
+# details    = "#333333"                      # the inner lines of the graphic
+#
+# for example, a light one (the frames and the grid stay faint white lines, the title block darker):
+# background = "#F2EFE6"
+# accent     = "#C2410C"
+# accent2    = "#1D4ED8"
+# text       = "#3F3F46"
+# lines      = "#B8B4A8"
+# details    = "#D6D2C4"
+
+
+# -----------------------------------------------------------------------------------------------------
+#  [layout] – which parts of the wallpaper are drawn and where
+# -----------------------------------------------------------------------------------------------------
+# The parts ("modules"): grid (the sheet), drawing (the circles drawing the graphic), theory (the text
+# about Fourier series), square (the square-wave example), spectrum, reconstruction, title (title block).
+#
+# Each one takes a table with any of these keys (missing ones keep their defaults from config.toml):
+#   enabled = false     not drawn at all
+#   x, y                the top-left corner;  w, h – the size
+#                         a number = px on a 1440 px high screen (scaled for other heights)
+#                         "N%"     = percent of the screen width (x, w) or height (y, h)
+#                         negative x / y = from the right / bottom edge of the screen to that of the part
+#                         negative w / h = the screen width / height minus that much (w = -120: 60 px
+#                         margins on both sides)
+#   scale = 1.2         larger (or smaller) text and lines inside the part
+# and a few of their own:
+#   drawing:         labels = false (no c₀, c₁… labels), align = "left" | "center" | "right"
+#   reconstruction:  direction = "row" (side by side), columns = 4 (a grid), empty = [0, 1] (free cells,
+#                    numbered row by row from 0)
+# (grid has only "enabled"; theory has no h – its text sets the height.)
+[layout]
+# grid           = { enabled = false }
+# theory         = { enabled = false }
+# square         = { enabled = false }
+# spectrum       = { enabled = false }
+# reconstruction = { enabled = false }
+# title          = { enabled = false }
+#
+# drawing        = { labels = false }
+# drawing        = { x = "34.5%", y = "20%", w = "40%", h = "52%" }   # the default place
+# drawing        = { x = 120, w = "50%", align = "left" }              # at the left edge
+# reconstruction = { x = -60, y = 78, w = 500, h = 1130 }              # the default: a column on the right
+# reconstruction = { x = 60, y = -60, w = -120, h = 300, direction = "row" }   # a row along the bottom
+# title          = { scale = 1.2 }
+#
+# Only one line per module can be on: TOML does not allow the same key twice in a section. To change
+# several things of one module, put them in one table: drawing = { labels = false, align = "right" }.
+
+
+# -----------------------------------------------------------------------------------------------------
+#  [layout_ultrawide] – used on top of [layout] on screens more than twice as wide as high
+# -----------------------------------------------------------------------------------------------------
+# By default the top-left corner stays empty there (for a desktop widget) and the drawing moves to
+# the right. Same keys as [layout].
+[layout_ultrawide]
+# drawing        = { x = "41.5%", y = "17%", w = "44%", h = "60%" }
+# theory         = { x = 960, y = 78, w = 520 }
+
+
+# -----------------------------------------------------------------------------------------------------
+#  The wallpaper itself: the graphic and its texts
+# -----------------------------------------------------------------------------------------------------
+# A recipe can list several wallpapers, each starting with [[wallpapers]]; this one has one.
+[[wallpapers]]
+
+# The SVG file (relative to this file). It should be one dark shape on a transparent background, like a
+# logo: its outer contour becomes the curve drawn by the circles. docs/adding-a-graphic.md says more.
+graphic = "../graphics/ghost.svg"
+
+# The name goes into the file names (best: letters, digits and "-"), the tag onto the title block.
+name = "my-wallpaper"
+tag = "GHOST"
+
+# Inner lines: the graphic is split into this many colours, and the edges between them are drawn as
+# thin lines inside the outline. 1 = none; for a one-colour logo use 1.
+graphic_colors = 2
+
+# Small shapes INSIDE the outline (eyes, dots) are not found by themselves – point to each one:
+# x, y = its centre as a fraction (0…1) of the width and height of the SVG canvas, and type:
+#   "shape"  – the whole one-colour shape there (a circle or an ellipse, drawn by one or two vectors)
+#   "circle" – the largest disc of that colour there (when the shape merges with other lines)
+# Separate small shapes OUTSIDE the outline (like the dots of a logo) are found automatically.
+extras = [{ x = 0.35, y = 0.4167, type = "shape" }, { x = 0.65, y = 0.4167, type = "shape" }]
+# extras = []
+
+# A graphic of several separate parts of similar size (like the six lambdas of NixOS): the N largest
+# are each drawn by a chain of circles of their own.
+# outlines = 1
+
+# Per-wallpaper overrides of [general] work here too, e.g. more circles only for this one:
+# circles = 60
+
+# Use one of the layouts in layouts/ instead of (or as well as) the one above – each gives a file of its
+# own, named …-<layout>-…: "default" (none), "minimal", "bare", "bare-left", "bare-right", "row",
+# "reconstruction-grid". A layout file wins over [layout] above.
+# layouts = ["default", "minimal"]
+
+# Texts about this graphic, per language – all optional. Without them the theory says "the graphic"
+# (default_noun in languages/<language>.toml) and ends with a general paragraph.
+[wallpapers.texts.en]
+noun = "ghost"                                # "The outline of the ghost is a closed curve…"
+# closing  = "The last paragraph of the theory: what is special about this graphic."
+# spectrum = "a note under the spectrum header"
+# author   = "Graphic: Your Name, CC BY 4.0"  # a credit above the title block (if the licence asks for one)
+
+# [wallpapers.texts.pl]
+# noun = "ducha"                              # in Polish in the genitive case ("Obrys ducha to…")
+# closing  = "…"
+# spectrum = "…"
+# author   = "…"

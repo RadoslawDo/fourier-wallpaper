@@ -9,7 +9,7 @@
 | `fourier_wallpaper/modules/` | one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
 | `tests/` | the golden-image test with its reference images, the recipe tests and the output-format tests |
 | `config.toml` | the defaults: resolutions, languages, layouts to make, colours, title, number of circles, layout of the modules |
-| `recipes/<name>.toml` | what to make in one run: `default` (used without a recipe; describes the keys), `examples` |
+| `recipes/<name>.toml` | what to make in one run: `default` (used without a recipe; describes the keys), `template` (every option, commented, for a new wallpaper), `examples`, `example-*` |
 | `configs/<name>.toml` | one wallpaper each: the graphic, its texts and anything it overrides (keys described in `cachyos.toml`) |
 | `layouts/<name>.toml` | layouts of the modules (see [Layout](layout.md#layout-files)) |
 | `languages/<code>.toml` | all texts (see [Configuration](configuration.md#languages)) |
