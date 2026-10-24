@@ -18,7 +18,7 @@ class Sheet:
         self.k, self.fontname = colors, font
         self.base, self.b = self._surface()
         self.glow, self.gl = self._surface()
-        self.TEXT = col(colors["text"], 0.62)
+        self.TEXT = col(colors.text, 0.62)
 
     def _surface(self):
         s = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.W, self.H)
@@ -64,7 +64,7 @@ class Sheet:
 
     def formula(self, t, x, y, size=20, c=None):
         """Formula with _{subscripts} and ^{superscripts} (Hack has no sub/superscript glyphs – smaller, shifted text)."""
-        c = c or col(self.k["accent"], 0.9)
+        c = c or col(self.k.accent, 0.9)
         b, i = self.b, 0
         while i < len(t):
             if t[i] in "_^" and i + 1 < len(t) and t[i + 1] == "{":
@@ -96,8 +96,8 @@ class Sheet:
     def header(self, t, x, y, width):
         """Section header: capitals in the accent colour and a rule to the end of the column."""
         S = self.S
-        w = self.text(t, x, y, 16, col(self.k["accent"], 0.95), bold=True)
-        self.poly([(x + w + 12 * S, y - 6 * S), (x + width, y - 6 * S)], col(self.k["lines"]), 1.5 * S)
+        w = self.text(t, x, y, 16, col(self.k.accent, 0.95), bold=True)
+        self.poly([(x + w + 12 * S, y - 6 * S), (x + width, y - 6 * S)], col(self.k.lines), 1.5 * S)
 
     def frame(self, x, y, w, h):
         b = self.b

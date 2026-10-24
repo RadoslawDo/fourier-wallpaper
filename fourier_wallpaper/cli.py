@@ -4,7 +4,7 @@ import glob
 import os
 import sys
 
-from .config import CONFIGS, LAYOUTS, ROOT, config_chain, find_config, merge_chain
+from .config import CONFIGS, LAYOUTS, ROOT, Overrides, config_chain, find_config, load_job, merge_chain
 from .layout import MODULES, check_layout
 from .render import generate
 
@@ -34,8 +34,16 @@ def main():
     ap.add_argument("-o", "--output", help="directory for the PNG files; {resolution} is replaced, e.g. out/{resolution}")
     args = ap.parse_args()
 
-    cli = {m: {"enabled": False} for m in args.hide} | {m: {"enabled": True} for m in args.show}
-    check_layout(cli, "--hide/--show")
+    modules = {m: {"enabled": False} for m in args.hide} | {m: {"enabled": True} for m in args.show}
+    check_layout(modules, "--hide/--show")
+    colors = {}
+    for kv in args.color:
+        key, sep, val = kv.partition("=")
+        if not sep:
+            sys.exit(f"--color {kv!r}: KEY=#RRGGBB, e.g. accent=#FF5500")
+        colors[key] = val
+    overrides = Overrides(colors=colors, circles=args.circles, title=args.title, languages=args.language,
+                          resolutions=args.resolution, output=args.output, modules=modules)
     defaults = config_chain(os.path.join(ROOT, "config.toml"))
     if args.graphic:
         name = os.path.splitext(os.path.basename(args.graphic))[0]
@@ -50,9 +58,12 @@ def main():
         layouts = args.layout or merge_chain(chain).get("general", {}).get("layouts", ["default"])
         for name in layouts:
             if name == "default":
-                done += generate(chain, "", args, cli)
+                job = load_job(chain, "", overrides)
             else:
                 path = find_config(name, LAYOUTS)
-                done += generate(chain + config_chain(path), "-" + os.path.splitext(os.path.basename(path))[0], args, cli)
+                job = load_job(chain + config_chain(path), "-" + os.path.splitext(os.path.basename(path))[0], overrides)
+            if not args.wallpaper or job.spec.name in args.wallpaper:
+                generate(job)
+                done += 1
     if not done:
         sys.exit(f"no wallpapers {args.wallpaper or ''} in {', '.join(c[-1][0] for c in wallpapers) or CONFIGS}")

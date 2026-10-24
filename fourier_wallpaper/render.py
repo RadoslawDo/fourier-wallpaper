@@ -1,5 +1,4 @@
 """Drawing one wallpaper: every enabled module in its box; generating it in every language and resolution."""
-import copy
 import math
 import os
 import sys
@@ -9,9 +8,9 @@ import cairo
 import numpy as np
 
 from .canvas import Sheet, col
-from .config import ROOT, merge_chain
-from .graphic import analyze
-from .layout import LAYOUT, LAYOUT_ULTRAWIDE, MODULES, check_layout, layout
+from .config import ROOT
+from .graphic import Circle, Curve, analyze
+from .layout import MODULES, layout
 from .series import Series
 from .texts import plural
 
@@ -19,17 +18,18 @@ from .texts import plural
 class Wallpaper:
     """One wallpaper at one resolution; each enabled module draws itself into its box."""
 
-    def __init__(self, job, series, W, H, lang):
-        self.job, self.f, self.lang, self.k = job, series, lang, job["colors"]
-        self.sh = Sheet(W, H, self.k, job["font"])
-        self.UW = W / H > 2      # ultrawide screen (with a widget in the top-left corner)
-        self.texts = job.get("texts", {}).get(job["language"], {})
-        self.boxes = layout(job["layout"], W, H, self.sh.S)
+    def __init__(self, job, series, screen, language, lang):
+        self.job, self.f, self.lang, self.k = job, series, lang, job.palette
+        self.settings, self.shape = job.settings, series.shape
+        self.sh = Sheet(screen.width, screen.height, self.k, job.settings.font)
+        self.UW = screen.ultrawide   # ultrawide screen (with a widget in the top-left corner)
+        self.texts = job.spec.texts_in(language)
+        self.boxes = layout(job.layers, screen.width, screen.height, self.sh.S)
 
     def render(self, path):
         sh, b, W, H = self.sh, self.sh.b, self.sh.W, self.sh.H
         # background: the sheet
-        b.set_source_rgba(*col(self.k["background"])); b.paint()
+        b.set_source_rgba(*col(self.k.background)); b.paint()
         g = cairo.RadialGradient(W * 0.62, H * 0.5, 0, W * 0.62, H * 0.5, max(W, H) * 0.75)
         g.add_color_stop_rgba(0, 1, 1, 1, 0.025); g.add_color_stop_rgba(1, 0, 0, 0, 0.18)
         b.set_source(g); b.paint()
@@ -63,9 +63,9 @@ class Wallpaper:
     # ------------------------------ main drawing: epicycles draw the outline ------------------------------
     def drawing(self, box):
         sh, b, S, k, f, lang = self.sh, self.sh.b, self.sh.S, self.k, self.f, self.lang
-        ACCENT, ACCENT2, BG, LINES = k["accent"], k["accent2"], k["background"], k["lines"]
-        OUTLINE, extras, cn = f.outline, f.extras, f.cn
-        K = self.job["circles"]      # terms n = -K..K
+        ACCENT, ACCENT2, BG, LINES = k.accent, k.accent2, k.background, k.lines
+        OUTLINE, extras, cn = self.shape.outline, self.shape.extras, f.cn
+        K = self.settings.circles    # terms n = -K..K
         T0 = 0.90                    # the moment the drawing is "frozen"
         labels_on = box.opts.get("labels", True)
         # the graphic fills the box height (or width); "align" pushes it to the left / right edge of the box
@@ -79,8 +79,8 @@ class Wallpaper:
         for p in OUTLINE[1:]:
             b.line_to(*Pt(*p))
         b.close_path(); b.fill()
-        for d, closed in f.details:
-            sh.poly([Pt(*p) for p in d], col(k["details"]), 1.5 * S, close=closed)
+        for d in self.shape.details:
+            sh.poly([Pt(*p) for p in d], col(k.details), 1.5 * S, close=True)
         sh.poly([Pt(*p) for p in OUTLINE], col(LINES), 1.5 * S, close=True, dash=[10 * S, 7 * S])
         # trace: reconstruction from 2K+1 circles for t = 0..T0 (slight ripples show at the corners)
         ts = np.linspace(0, T0, 3000 if K <= 40 else 10000)
@@ -106,17 +106,16 @@ class Wallpaper:
         tx_, ty_ = Z(pos)
         sh.disc(tx_, ty_, 7 * S, col(ACCENT), glow=True); sh.disc(tx_, ty_, 3 * S, col(BG))
         cx_, cy_ = Z(cn[0])
-        sh.disc(cx_, cy_, 5 * S, col(k["text"], 0.8))
+        sh.disc(cx_, cy_, 5 * S, col(k.text, 0.8))
         if labels_on:
             sh.formula("c_{0}", cx_ - 34 * S, cy_ + 24 * S, 15, sh.TEXT)
 
         # --- small shapes: circle = one term, ellipse = two (n = 1 and n = −1) ---
         nx = len(extras)
-        for i, (kind, e) in enumerate(extras):
+        for i, e in enumerate(extras):
             done = 1.0 - 0.38 * (nx - 1 - i) / max(1, nx - 1)       # different drawing phases, the last one complete
-            if kind == "circle":
-                dx, dy, dr = e
-                x0, y0 = Pt(dx, dy); r = dr * sc
+            if isinstance(e, Circle):
+                x0, y0 = Pt(e.x, e.y); r = e.r * sc
                 ph = -math.pi / 2
                 for ctx, lw in ((b, 3.2 * S), (sh.gl, 8 * S)):
                     ctx.new_path(); ctx.set_source_rgba(*col(ACCENT)); ctx.set_line_width(lw)
@@ -126,7 +125,7 @@ class Wallpaper:
                 sh.poly([(x0, y0), (ex, ey)], col(ACCENT2, 0.9), 2 * S)
                 sh.disc(x0, y0, 2.6 * S, col(ACCENT2)); sh.disc(ex, ey, 5 * S, col(ACCENT), glow=True)
             else:
-                ce = f.fourier(e, 512)
+                ce = f.fourier(e.points, 512)
                 ell = lambda t: ce[0] + ce[1] * np.exp(2j * np.pi * t) + ce[-1] * np.exp(-2j * np.pi * t)
                 tt = np.linspace(0, 1, 400)
                 sh.poly([Z(v) for v in ell(tt)], col(LINES), 1.2 * S, close=True)
@@ -140,14 +139,13 @@ class Wallpaper:
                 sh.disc(x2, y2, 5 * S, col(ACCENT), glow=True)
         # label at the largest shape: beside it when it lies outside the outline, otherwise via a leader to the right
         if extras and labels_on:
-            kind, e = extras[0]
-            label = lang["label_circle"] if kind == "circle" else lang["label_ellipse"]
-            if kind == "circle":
-                ox, oy, er = e
+            e = extras[0]
+            if isinstance(e, Circle):
+                label, (ox, oy), er = lang["label_circle"], (e.x, e.y), e.r
             else:
-                ox, oy, er = np.mean([p[0] for p in e]), np.mean([p[1] for p in e]), 0
+                label, (ox, oy), er = lang["label_ellipse"], e.centre, 0
             x0, y0 = Pt(ox, oy); er *= sc
-            if f.inside[int(oy), int(ox)]:
+            if self.shape.inside[int(oy), int(ox)]:
                 lx, ly = Pt(f.bbox[1], 0)[0] + 50 * S, y0 - 60 * S
                 if not self.UW:      # narrower screen: above the drawing, before the modules on the right at that height
                     ly = Pt(0, f.bbox[2])[1] - 30 * S
@@ -164,11 +162,11 @@ class Wallpaper:
     # ------------------------------ theory (h is not used – the text sets the height) ------------------------------
     def theory(self, box):
         sh, S, lang, texts = self.sh, self.sh.S, self.lang, self.texts
-        K = self.job["circles"]
+        K = self.settings.circles
         TX, TW = box.x, box.w
         y = box.y + 12 * S
         sh.header(lang["theory_header"], TX, y, TW); y += 44 * S
-        y = sh.para(lang["theory_1"].format(noun=texts.get("noun", lang["default_noun"])), TX, y, TW)
+        y = sh.para(lang["theory_1"].format(noun=texts.noun if texts.noun is not None else lang["default_noun"]), TX, y, TW)
         y += 8 * S; sh.formula("z(t) = x(t) + i·y(t),   0 ≤ t < 1", TX + 14 * S, y + 6 * S); y += 50 * S
         y = sh.para(lang["theory_2"], TX, y, TW)
         y += 8 * S; sh.formula("z(t) ≈ Σ_{|n|≤N} c_{n} e^{2πint}", TX + 14 * S, y + 6 * S, 22); y += 54 * S
@@ -178,18 +176,18 @@ class Wallpaper:
         y += 10 * S
         y = sh.para(lang["theory_5"], TX, y, TW)
         y += 10 * S
-        if "closing" in texts:
-            last = texts["closing"]
+        if texts.closing is not None:
+            last = texts.closing
         else:
-            kinds = {kd for kd, _ in self.f.extras}
-            last = " ".join([lang["closing_circle"]] * ("circle" in kinds) + [lang["closing_ellipse"]] * ("curve" in kinds)
+            kinds = {type(e) for e in self.shape.extras}
+            last = " ".join([lang["closing_circle"]] * (Circle in kinds) + [lang["closing_ellipse"]] * (Curve in kinds)
                             + [lang["closing_rest"]])
         sh.para(last, TX, y, TW)
 
     # ------------------------------ example: square wave ------------------------------
     def square(self, box):
         sh, S, k, lang = self.sh, self.sh.S, self.k, self.lang
-        ACCENT, ACCENT2 = k["accent"], k["accent2"]
+        ACCENT, ACCENT2 = k.accent, k.accent2
         x, y0, w = box.x, box.y + 12 * S, box.w
         sh.header(lang["square_header"], x, y0, w)
         sh.formula("f(t) = 4/π · Σ_{k} sin((2k+1)t) / (2k+1)", x, y0 + 40 * S, 18)
@@ -202,7 +200,7 @@ class Wallpaper:
         for i in range(4):
             lvl = mid - amp * (1 if i % 2 == 0 else -1)
             sq += [(px + pw * i / 4, lvl), (px + pw * (i + 1) / 4, lvl)]
-        sh.poly(sq, col(k["lines"]), 1.5 * S, dash=[8 * S, 6 * S])
+        sh.poly(sq, col(k.lines), 1.5 * S, dash=[8 * S, 6 * S])
         tt = np.linspace(0, 4 * math.pi, 1400)
         for N, c, lw in ((1, col(ACCENT2, 0.35), 1.4), (3, col(ACCENT2, 0.55), 1.4), (9, col(ACCENT2, 0.85), 1.6), (49, col(ACCENT), 2.2)):
             fN = sum((np.sin((2 * i + 1) * tt) / (2 * i + 1) for i in range(N)), np.zeros_like(tt)) * 4 / math.pi
@@ -218,7 +216,7 @@ class Wallpaper:
         sh, S, k, lang, texts, cn = self.sh, self.sh.S, self.k, self.lang, self.texts, self.f.cn
         x, y0, w = box.x, box.y + 12 * S, box.w
         sh.header(lang["spectrum_header"], x, y0, w)
-        sh.formula(lang["spectrum_caption"] + (": " + texts["spectrum"] if "spectrum" in texts else ""), x, y0 + 36 * S, 13, sh.TEXT)
+        sh.formula(lang["spectrum_caption"] + (": " + texts.spectrum if texts.spectrum is not None else ""), x, y0 + 36 * S, 13, sh.TEXT)
         px, py, pw = x, y0 + 64 * S, w
         ph = box.y + box.h - py
         sh.frame(px, py, pw, ph)
@@ -227,11 +225,11 @@ class Wallpaper:
         for n in range(-30, 31):
             xx = px + pw * (n + 31) / 62
             if n == 0:
-                sh.poly([(xx, base_y), (xx, py + 14 * S)], col(k["lines"]), 2 * S, dash=[4 * S, 4 * S])
+                sh.poly([(xx, base_y), (xx, py + 14 * S)], col(k.lines), 2 * S, dash=[4 * S, 4 * S])
                 sh.formula("c_{0}", xx + 6 * S, py + 30 * S, 13, sh.TEXT)
                 continue
             v = max(0.0, (math.log10(abs(cn[n]) / top) + 3.2) / 3.2)
-            c = col(k["accent"]) if n > 0 else col(k["accent2"])
+            c = col(k.accent) if n > 0 else col(k.accent2)
             yy = base_y - v * (ph - 50 * S)
             sh.poly([(xx, base_y), (xx, yy)], c, 2.4 * S, glow=abs(n) <= 2)
             sh.disc(xx, yy, 3.4 * S, c)
@@ -242,7 +240,7 @@ class Wallpaper:
     # ------------------------------ reconstructions: a column (or a row) of frames ------------------------------
     def reconstruction(self, box):
         sh, S, k, lang, f = self.sh, self.sh.S, self.k, self.lang, self.f
-        Ns, gap = self.job["reconstructions"], 22 * S
+        Ns, gap = self.settings.reconstructions, 22 * S
         # cells of a grid, numbered row by row from 0; "empty" ones are skipped (e.g. the place of a widget)
         cols = box.opts.get("columns", len(Ns) if box.opts.get("direction") == "row" else 1)
         empty = set(box.opts.get("empty", []))
@@ -256,79 +254,45 @@ class Wallpaper:
         for c, Kr in zip(cells, Ns):
             fx, fy = box.x + (fw + gap) * (c % cols), top + (fh + gap) * (c // cols)
             sh.frame(fx, fy, fw, fh)
-            sh.formula(f"N = {Kr}", fx + 14 * S, fy + 28 * S, 16, col(k["accent"], 0.85))
+            sh.formula(f"N = {Kr}", fx + 14 * S, fy + 28 * S, 16, col(k.accent, 0.85))
             sh.text(f"{2 * Kr + 1} {plural(2 * Kr + 1, lang)}", fx + 14 * S, fy + 50 * S, 13)
             _, Zr, Pr = f.placer(fx + fw * 0.58, fy + fh * 0.5, fw * 0.66, fh * 0.76)
-            sh.poly([Pr(*p) for p in f.outline], col(k["lines"]), 1.2 * S, close=True, dash=[6 * S, 5 * S])
+            sh.poly([Pr(*p) for p in self.shape.outline], col(k.lines), 1.2 * S, close=True, dash=[6 * S, 5 * S])
             tr = np.linspace(0, 1, 1500 if Kr <= 40 else 6000)
-            sh.poly([Zr(v) for v in f.recon(Kr, tr)], col(k["accent"]), 2.2 * S, glow=True, close=True)
+            sh.poly([Zr(v) for v in f.recon(Kr, tr)], col(k.accent), 2.2 * S, glow=True, close=True)
 
     # ------------------------------ title block (the author credit goes above it) ------------------------------
     def title(self, box):
-        sh, b, S, k, lang, job = self.sh, self.sh.b, self.sh.S, self.k, self.lang, self.job
+        sh, b, S, k, lang, st = self.sh, self.sh.b, self.sh.S, self.k, self.lang, self.settings
         tx, ty, tw_, th_ = box[:4]
         b.new_path(); b.set_source_rgba(0, 0, 0, 0.2); b.rectangle(tx, ty, tw_, th_); b.fill()
-        b.set_source_rgba(*col(k["lines"])); b.set_line_width(1.5 * S); b.rectangle(tx, ty, tw_, th_)
+        b.set_source_rgba(*col(k.lines)); b.set_line_width(1.5 * S); b.rectangle(tx, ty, tw_, th_)
         b.move_to(tx, ty + th_ * 0.5); b.line_to(tx + tw_, ty + th_ * 0.5)
         b.move_to(tx + tw_ * 0.62, ty + th_ * 0.5); b.line_to(tx + tw_ * 0.62, ty + th_); b.stroke()
-        title, size = job["title"], 20
+        title, size = st.title, 20
         while sh.width(title, size, True) > tw_ - 28 * S and size > 10:   # long title – smaller font
             size -= 1
-        sh.text(title, tx + 14 * S, ty + th_ * 0.5 - 15 * S, size, col(k["accent"], 0.85), bold=True)
-        sh.text(f"{lang['sheet']}   {job['tag']}", tx + 14 * S, ty + th_ - 17 * S, 13, col(k["text"], 0.5))
-        sh.text(f"{lang['revision']} {job['revision']}", tx + tw_ * 0.62 + 14 * S, ty + th_ - 17 * S, 13, col(k["text"], 0.5))
-        if self.texts.get("author"):
-            a_ = self.texts["author"]
-            sh.text(a_, tx + tw_ - sh.width(a_, 12), ty - 14 * S, 12, col(k["text"], 0.4))
+        sh.text(title, tx + 14 * S, ty + th_ * 0.5 - 15 * S, size, col(k.accent, 0.85), bold=True)
+        sh.text(f"{lang['sheet']}   {self.job.spec.tag}", tx + 14 * S, ty + th_ - 17 * S, 13, col(k.text, 0.5))
+        sh.text(f"{lang['revision']} {st.revision}", tx + tw_ * 0.62 + 14 * S, ty + th_ - 17 * S, 13, col(k.text, 0.5))
+        if self.texts.author:
+            a_ = self.texts.author
+            sh.text(a_, tx + tw_ - sh.width(a_, 12), ty - 14 * S, 12, col(k.text, 0.4))
 
 
-def generate(chain, suffix, args, cli):
-    """One wallpaper (config files: defaults, the wallpaper, the layout) in every language and resolution.
-    suffix – added to the file name after the wallpaper name (the layout, empty for the default one)."""
-    cfg = merge_chain(chain)
-    if "wallpaper" not in cfg:
-        sys.exit(f"{chain[-1][0]}: no [wallpaper] table")
-    t = cfg["wallpaper"]
-    if args.wallpaper and t["name"] not in args.wallpaper:
-        return False
-    general, colors = cfg.get("general", {}), dict(cfg.get("colors", {}))
-    for kv in args.color:
-        key, _, val = kv.partition("=")
-        colors[key] = val
-    languages = args.language or general.get("language", "en")
-    languages = [languages] if isinstance(languages, str) else languages
-    sizes = args.resolution or general.get("resolutions", ["3440x1440"])
-    # "{resolution}" in the output path gives a folder per resolution (e.g. one per monitor for a slideshow)
-    out = args.output or general.get("output", ".")
-
-    job = copy.deepcopy(general)
-    job.update({k: v for k, v in t.items() if k != "colors"})
-    # colours given on the command line win over the wallpaper's own ones
-    job["colors"] = dict(colors, **({} if args.color else t.get("colors", {})))
-    job.setdefault("circles", 40); job.setdefault("reconstructions", [1, 3, 8, 30])
-    job.setdefault("title", "FOURIER"); job.setdefault("revision", "A"); job.setdefault("font", "Hack")
-    if args.circles:
-        job["circles"] = args.circles
-    if args.title:
-        job["title"] = args.title
-    # module layout: built-in, then every file in turn, then the command line; the [layout_ultrawide] of a file
-    # is used only on ultrawide screens and wins over the [layout] of the same file (not over later files)
-    job["layout"] = [(LAYOUT, False), (LAYOUT_ULTRAWIDE, True)]
-    for path, c in chain:
-        for key, wide in (("layout", False), ("layout_ultrawide", True)):
-            check_layout(c.get(key, {}), f"{path}: {key}")
-            job["layout"].append((c.get(key, {}), wide))
-    job["layout"].append((cli, False))
-    series = Series(analyze(job["graphic"], job.get("graphic_colors", 3), job.get("extras", [])))
-    for language in languages:
-        with open(os.path.join(ROOT, "languages", f"{language}.toml"), "rb") as f:
+def generate(job):
+    """The files of one Job: every language × resolution."""
+    series = Series(analyze(job.spec))
+    for language in job.languages:
+        path = os.path.join(ROOT, "languages", f"{language}.toml")
+        if not os.path.isfile(path):
+            sys.exit(f"language {language!r}: no file languages/{language}.toml")
+        with open(path, "rb") as f:
             lang = tomllib.load(f)
-        job["language"] = language
-        for size in sizes:
-            W, H = map(int, size.lower().split("x"))
-            folder = os.path.normpath(out.format(resolution=f"{W}x{H}"))
+        for screen in job.screens:
+            # "{resolution}" in the output path gives a folder per resolution (e.g. one per monitor for a slideshow)
+            folder = os.path.normpath(job.output.format(resolution=str(screen)))
             os.makedirs(folder, exist_ok=True)
-            path = os.path.join(folder, f"fourier-{job['name']}{suffix}-{language}_{W}x{H}.png")
-            Wallpaper(job, series, W, H, lang).render(path)
+            path = os.path.join(folder, job.file_name(language, screen))
+            Wallpaper(job, series, screen, language, lang).render(path)
             print(path)
-    return True

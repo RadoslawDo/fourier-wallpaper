@@ -55,7 +55,8 @@ accent = "#FF5500"
 name = "tux-red"
 ```
 
-Paths are relative to the file that sets them.
+Paths are relative to the file that sets them. Unknown sections, keys and colours, and values of
+the wrong kind, stop the program with a message naming the key.
 
 Requirements: Python 3.11+ (tomllib), pycairo, opencv-python, numpy, Pillow and `rsvg-convert`
 (librsvg). To install the Python packages in a virtual environment:

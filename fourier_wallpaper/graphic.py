@@ -2,9 +2,55 @@
 import math
 import subprocess
 import sys
+from dataclasses import dataclass
 
 import cv2
 import numpy as np
+
+Point = tuple[float, float]          # pixels of the raster (see raster())
+
+
+@dataclass(frozen=True)
+class Circle:
+    """A small shape that is a circle: drawn by 1 term."""
+    x: float
+    y: float
+    r: float
+
+    @property
+    def extent(self):            # corners of the bounding square
+        return [(self.x - self.r, self.y - self.r), (self.x + self.r, self.y + self.r)]
+
+    @property
+    def size(self):              # for sorting small shapes – the radius (Curve: the area)
+        return self.r
+
+
+@dataclass(frozen=True)
+class Curve:
+    """Any other small shape: drawn as an ellipse, by 2 terms (n = 1 and n = −1)."""
+    points: list[Point]
+
+    @property
+    def extent(self):
+        return self.points
+
+    @property
+    def size(self):
+        return cv2.contourArea(np.array(self.points, np.float32))
+
+    @property
+    def centre(self):
+        return float(np.mean([p[0] for p in self.points])), float(np.mean([p[1] for p in self.points]))
+
+
+@dataclass(frozen=True)
+class Shape:
+    """What is taken from the graphic."""
+    outline: list[Point]                 # outer contour of the whole graphic (closed)
+    details: list[list[Point]]           # inner lines: boundaries between colour regions (closed)
+    extras: list[Circle | Curve]         # small shapes, the largest first
+    inside: np.ndarray                   # 1 inside the outline (raster size)
 
 
 def raster(svg, height=1600):
@@ -22,7 +68,7 @@ def contours(mask, mode, min_area=150):
 
 
 def as_pts(c, eps=0.8):
-    return [tuple(map(float, p[0])) for p in cv2.approxPolyDP(c, eps, True)]
+    return [(float(p[0][0]), float(p[0][1])) for p in cv2.approxPolyDP(c, eps, True)]
 
 
 def classify(c):
@@ -31,12 +77,14 @@ def classify(c):
     _, r = cv2.minEnclosingCircle(c)
     if area / (math.pi * r * r) > 0.9:
         m = cv2.moments(c)
-        return ("circle", (m["m10"] / m["m00"], m["m01"] / m["m00"], math.sqrt(area / math.pi)))
-    return ("curve", as_pts(c, 0.5))
+        return Circle(m["m10"] / m["m00"], m["m01"] / m["m00"], math.sqrt(area / math.pi))
+    return Curve(as_pts(c, 0.5))
 
 
-def analyze(svg, colors, extras_cfg):
-    im = raster(svg)
+def analyze(spec):
+    """The outline, inner lines and small shapes of the wallpaper's graphic (a WallpaperSpec)."""
+    colors = spec.graphic_colors
+    im = raster(spec.graphic)
     h, w = im.shape[:2]
     a = im[..., 3] > 128
     outer = sorted(contours(a, cv2.RETR_EXTERNAL), key=cv2.contourArea, reverse=True)
@@ -59,21 +107,21 @@ def analyze(svg, colors, extras_cfg):
             continue
         m = ((labels == k) & a & (inside > 0)).astype(np.uint8)
         m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
-        details += [(as_pts(c), True) for c in contours(m, cv2.RETR_CCOMP)]
+        details += [as_pts(c) for c in contours(m, cv2.RETR_CCOMP)]
     # small shapes: separate ones next to the outline and the ones pointed to in the config
     extras = [classify(c) for c in outer[1:] if cv2.contourArea(c) > 3e-4 * cv2.contourArea(main)]
-    for e in extras_cfg:
-        x, y = int(e["x"] * w), int(e["y"] * h)
+    for e in spec.extras:
+        x, y = int(e.x * w), int(e.y * h)
         m = (labels == labels[y, x]) & a
-        if e.get("type", "shape") == "circle":
+        if e.type == "circle":
             # the largest disc of this colour near the given point (the shape merges with other lines)
             r0 = int(0.04 * h)
             dist = cv2.distanceTransform(m.astype(np.uint8), cv2.DIST_L2, 5)
             win = dist[y - r0:y + r0, x - r0:x + r0]
             yy, xx = np.unravel_index(np.argmax(win), win.shape)
-            extras.append(("circle", (float(x - r0 + xx), float(y - r0 + yy), float(win[yy, xx]))))
+            extras.append(Circle(float(x - r0 + xx), float(y - r0 + yy), float(win[yy, xx])))
         else:
             _, comp = cv2.connectedComponents(m.astype(np.uint8))
             extras.append(classify(contours(comp == comp[y, x], cv2.RETR_EXTERNAL)[0]))
-    extras.sort(key=lambda e: -(e[1][2] if e[0] == "circle" else cv2.contourArea(np.array(e[1], np.float32))))
-    return dict(outline=as_pts(main), details=details, extras=extras, inside=inside)
+    extras.sort(key=lambda e: -e.size)
+    return Shape(as_pts(main), details, extras, inside)

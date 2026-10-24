@@ -8,14 +8,12 @@ class Series:
     """Fourier series of the outline, plus placing the graphic (outline and small shapes) on the sheet."""
 
     def __init__(self, shape):
-        self.outline, self.details, self.extras, self.inside = (shape[k] for k in ("outline", "details", "extras", "inside"))
-        xs = [p[0] for p in self.outline]; ys = [p[1] for p in self.outline]
-        for kind, e in self.extras:
-            ep = [(e[0] - e[2], e[1] - e[2]), (e[0] + e[2], e[1] + e[2])] if kind == "circle" else e
-            xs += [p[0] for p in ep]; ys += [p[1] for p in ep]
+        self.shape = shape
+        pts = shape.outline + [p for e in shape.extras for p in e.extent]
+        xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
         self.bbox = min(xs), max(xs), min(ys), max(ys)
         self.mid = (self.bbox[0] + self.bbox[1]) / 2, (self.bbox[2] + self.bbox[3]) / 2
-        self.cn = self.fourier(self.outline)
+        self.cn = self.fourier(shape.outline)
 
     def fourier(self, poly_, M=2048):
         """Coefficients cₙ of a closed curve (a polygon sampled at equal arc lengths)."""
