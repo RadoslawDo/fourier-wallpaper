@@ -22,7 +22,7 @@ from .tables import Table, is_list, is_table
 RECIPES = os.path.join(ROOT, "recipes")
 
 # keys of an entry: "config" and "layouts", and the keys of a config file without their sections
-GENERAL_KEYS = {"language", "resolutions", "output"}
+GENERAL_KEYS = {"language", "resolutions", "output", "format", "quality"}
 TABLE_KEYS = {"colors", "layout", "layout_ultrawide"}
 WALLPAPER_KEYS = SECTIONS["wallpaper"] or set()
 ENTRY_KEYS = {"config", "layouts"} | GENERAL_KEYS | TABLE_KEYS | WALLPAPER_KEYS
@@ -90,7 +90,7 @@ def check_outputs(jobs: list[tuple[str, Job]]) -> None:
     for where, job in jobs:
         for language in job.languages:
             for screen in job.screens:
-                path = job.path(language, screen)
-                if path in made and made[path] != where:
-                    sys.exit(f"{made[path]} and {where} both make {path} – give one of them another name")
-                made[path] = where
+                for path in job.paths(language, screen):
+                    if path in made and made[path] != where:
+                        sys.exit(f"{made[path]} and {where} both make {path} – give one of them another name")
+                    made[path] = where

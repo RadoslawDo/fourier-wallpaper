@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import contextlib
+import io
 import math
+import re
 from collections.abc import Generator, Sequence
 from typing import TYPE_CHECKING
 
@@ -14,6 +16,8 @@ if TYPE_CHECKING:                    # config imports the modules, which import 
     from .graphic import Point
 
 RGBA = tuple[float, float, float, float]
+RASTER = ("png", "webp")              # made from one drawing
+FORMATS = (*RASTER, "svg", "pdf")     # svg and pdf: each drawn again on its own vector surface
 
 
 def col(h: str, a: float = 1.0) -> RGBA:
@@ -21,18 +25,34 @@ def col(h: str, a: float = 1.0) -> RGBA:
 
 
 class Sheet:
-    """Wallpaper canvas: a sharp layer and a glow layer (blurred later), plus drawing helpers."""
+    """Wallpaper canvas: a sharp layer and a glow layer (blurred later), plus drawing helpers.
+    Without a vector file the layers are images (for save); with one (a .svg or .pdf path) the sharp layer is
+    drawn into that file (written by finish). An SVG gets its glow as vector lines under a blur filter, a PDF
+    as a blurred image."""
 
-    def __init__(self, W: int, H: int, colors: Palette, font: str):
+    def __init__(self, W: int, H: int, colors: Palette, font: str, vector: str | None = None):
         self.W, self.H, self.S = W, H, H / 1440          # scale relative to 1440 px height
         self.k, self.fontname = colors, font
-        self.base, self.b = self._surface()
-        self.glow, self.gl = self._surface()
+        self.vector = vector
+        self.svg = vector is not None and vector.endswith(".svg")
+        self.glow_svg = io.BytesIO()
+        self.base, self.b = self._surface(vector)
+        self.glow, self.gl = self._surface(self.glow_svg if self.svg else None)
         self.TEXT = col(colors.text, 0.62)
 
-    def _surface(self) -> tuple[cairo.ImageSurface, cairo.Context[cairo.ImageSurface]]:
-        s = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.W, self.H)
-        c = cairo.Context(s)
+    def _surface(self, file: str | io.BytesIO | None) -> tuple[cairo.Surface, cairo.Context[cairo.Surface]]:
+        s: cairo.Surface
+        if file is None:
+            s = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.W, self.H)
+        elif self.svg:
+            s = cairo.SVGSurface(file, self.W, self.H)
+            s.set_document_unit(cairo.SVGUnit.USER)       # sizes in px, as in the raster files
+        else:
+            s = cairo.PDFSurface(file, self.W, self.H)    # 1 px = 1 pt
+        c: cairo.Context[cairo.Surface] = cairo.Context(s)
+        if file is not None:          # text measured as on an image, so it wraps the same way in every format
+            o = cairo.FontOptions(); o.set_hint_metrics(cairo.HINT_METRICS_ON); o.set_hint_style(cairo.HINT_STYLE_FULL)
+            c.set_font_options(o)
         c.set_line_cap(cairo.LINE_CAP_ROUND); c.set_line_join(cairo.LINE_JOIN_ROUND)
         return s, c
 
@@ -126,11 +146,53 @@ class Sheet:
         finally:
             self.S = S
 
-    def save(self, path: str) -> None:
-        def pil(s: cairo.ImageSurface) -> Image.Image:
-            s.flush()
-            return Image.frombuffer("RGBA", (self.W, self.H), bytes(s.get_data()), "raw", "BGRa", 0, 1)
-        img = pil(self.base)
-        g = pil(self.glow).filter(ImageFilter.GaussianBlur(9 * self.S))
+    def _glow_image(self) -> Image.Image:
+        """The glow layer blurred, at half strength."""
+        g = _image(self.glow, self.W, self.H).filter(ImageFilter.GaussianBlur(9 * self.S))
         g.putalpha(g.getchannel("A").point(lambda v: int(v * 0.5)))
-        Image.alpha_composite(img, g).convert("RGB").save(path, optimize=True)
+        return g
+
+    def save(self, paths: Sequence[str], quality: int | None = None) -> None:
+        """Image files (.png, .webp) of the layers; quality: of a WebP file, None = lossless."""
+        img = Image.alpha_composite(_image(self.base, self.W, self.H), self._glow_image()).convert("RGB")
+        for path in paths:
+            if path.endswith(".webp"):
+                img.save(path, lossless=quality is None, quality=quality or 100, method=6)
+            else:
+                img.save(path, optimize=True)
+
+    def finish(self) -> None:
+        """Writes the vector file."""
+        if self.svg:
+            self.glow.finish(); self.base.finish()
+            assert self.vector
+            with open(self.vector, encoding="utf-8") as f:
+                svg = f.read()
+            with open(self.vector, "w", encoding="utf-8") as f:
+                f.write(_with_glow(svg, self.glow_svg.getvalue().decode(), 9 * self.S, self.W, self.H))
+        else:
+            # a PDF has no blur: the glow goes on top as an image (premultiplied, as cairo has it)
+            data = bytearray(self._glow_image().convert("RGBa").tobytes("raw", "BGRa"))
+            image = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_ARGB32, self.W, self.H)
+            self.b.set_source_surface(image); self.b.paint()
+            self.base.finish()
+
+
+def _image(s: cairo.Surface, W: int, H: int) -> Image.Image:
+    assert isinstance(s, cairo.ImageSurface)
+    s.flush()
+    return Image.frombuffer("RGBA", (W, H), bytes(s.get_data()), "raw", "BGRa", 0, 1)
+
+
+def _with_glow(svg: str, glow: str, blur: float, W: int, H: int) -> str:
+    """The SVG with the glow SVG put on top of it: blurred, at half opacity. The blurred alpha is squared, as
+    the image files blur colour and alpha apart (not premultiplied), which fades the glow faster. The ids of the glow get a prefix,
+    so they do not clash with those of the sharp layer."""
+    body = glow[glow.index(">", glow.index("<svg")) + 1:glow.rindex("</svg>")]
+    body = re.sub(r'(id="|href="#|url\(#)', r"\1glow-", body)
+    group = (f'<filter id="glow-blur" filterUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}">'
+             f'<feGaussianBlur stdDeviation="{blur:.3f}"/>'
+             f'<feComponentTransfer><feFuncA type="gamma" exponent="2"/></feComponentTransfer></filter>\n'
+             f'<g filter="url(#glow-blur)" opacity="0.5">{body}</g>\n')
+    end = svg.rindex("</svg>")
+    return svg[:end] + group + svg[end:]

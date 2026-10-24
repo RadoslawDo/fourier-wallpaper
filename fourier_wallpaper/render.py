@@ -5,7 +5,7 @@ import tomllib
 
 import cairo
 
-from .canvas import Sheet, col
+from .canvas import RASTER, Sheet, col
 from .config import ROOT, Job, Screen
 from .graphic import analyze
 from .layout import layout
@@ -17,14 +17,17 @@ from .texts import Lang
 class Renderer:
     """One wallpaper at one resolution."""
 
-    def __init__(self, job: Job, series: Series, screen: Screen, language: str, lang: Lang):
-        sheet = Sheet(screen.width, screen.height, job.palette, job.settings.font)
+    def __init__(self, job: Job, series: Series, screen: Screen, language: str, lang: Lang,
+                 vector: str | None = None):
+        self.quality = job.quality
+        sheet = Sheet(screen.width, screen.height, job.palette, job.settings.font, vector)
         self.ctx = RenderContext(sheet=sheet, palette=job.palette, series=series, shape=series.shape,
                                  settings=job.settings, spec=job.spec, texts=job.spec.texts_in(language), lang=lang,
                                  ultrawide=screen.ultrawide,
                                  boxes=layout(job.layers, screen.width, screen.height, sheet.S))
 
-    def render(self, path: str) -> None:
+    def render(self, paths: list[str]) -> None:
+        """Draws it; paths: the image files (.png, .webp) to save it as, or [] for the vector file of the sheet."""
         sh, W, H = self.ctx.sheet, self.ctx.sheet.W, self.ctx.sheet.H
         b = sh.b
         # background: the sheet
@@ -37,7 +40,10 @@ class Renderer:
             if box:
                 with sh.scaled(box.scale):
                     module().draw(self.ctx, box)
-        sh.save(path)
+        if sh.vector:
+            sh.finish()
+        else:
+            sh.save(paths, self.quality)
 
 
 def generate(job: Job) -> None:
@@ -56,6 +62,12 @@ def generate(job: Job) -> None:
         for screen in job.screens:
             # "{resolution}" in the output path gives a folder per resolution (e.g. one per monitor for a slideshow)
             os.makedirs(job.folder(screen), exist_ok=True)
-            path = job.path(language, screen)
-            Renderer(job, series, screen, language, lang).render(path)
-            print(path)
+            # the image formats come from one drawing, each vector format is drawn again into its own file
+            raster = [job.path(language, screen, fmt) for fmt in job.formats if fmt in RASTER]
+            if raster:
+                Renderer(job, series, screen, language, lang).render(raster)
+            for fmt in job.formats:
+                if fmt not in RASTER:
+                    Renderer(job, series, screen, language, lang, job.path(language, screen, fmt)).render([])
+            for path in job.paths(language, screen):
+                print(path)

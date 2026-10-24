@@ -8,6 +8,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field, fields
 from typing import Any, Literal, Self
 
+from .canvas import FORMATS
 from .layout import LAYOUT, LAYOUT_ULTRAWIDE, check_layout
 from .tables import Table, is_list, is_table
 
@@ -62,7 +63,7 @@ def merge_chain(chain: Chain) -> Table:
 # ============================== what the files say about one wallpaper ==============================
 SETTINGS = {"circles", "reconstructions", "title", "revision", "font", "graphic_colors"}   # [general] or [wallpaper]
 SECTIONS: dict[str, set[str] | None] = {
-    "general": SETTINGS | {"language", "resolutions", "layouts", "output"},
+    "general": SETTINGS | {"language", "resolutions", "layouts", "output", "format", "quality"},
     "wallpaper": SETTINGS | {"name", "graphic", "tag", "outlines", "extras", "texts", "colors"},
     "colors": None, "layout": None, "layout_ultrawide": None,        # checked by Palette / check_layout
 }
@@ -160,6 +161,7 @@ class Overrides:
     languages: list[str] | None = None
     resolutions: list[str] | None = None
     output: str | None = None
+    formats: list[str] | None = None
     modules: dict[str, Table] = field(default_factory=dict[str, Table])     # --hide / --show
 
 
@@ -174,15 +176,21 @@ class Job:
     screens: tuple[Screen, ...]
     output: str                       # folder; "{resolution}" is replaced, e.g. ../3440x1440
     suffix: str = ""                  # after the wallpaper name in the file name (the layout)
+    formats: tuple[str, ...] = ("png",)
+    quality: int | None = None        # of WebP files: 1–100, None = lossless
 
-    def file_name(self, language: str, screen: Screen) -> str:
-        return f"fourier-{self.spec.name}{self.suffix}-{language}_{screen}.png"
+    def file_name(self, language: str, screen: Screen, fmt: str = "png") -> str:
+        return f"fourier-{self.spec.name}{self.suffix}-{language}_{screen}.{fmt}"
 
     def folder(self, screen: Screen) -> str:
         return os.path.normpath(self.output.format(resolution=str(screen)))
 
-    def path(self, language: str, screen: Screen) -> str:
-        return os.path.join(self.folder(screen), self.file_name(language, screen))
+    def path(self, language: str, screen: Screen, fmt: str = "png") -> str:
+        return os.path.join(self.folder(screen), self.file_name(language, screen, fmt))
+
+    def paths(self, language: str, screen: Screen) -> list[str]:
+        """Its files in one language and resolution: one per format."""
+        return [self.path(language, screen, fmt) for fmt in self.formats]
 
 
 def _check(value: Any, ok: Callable[[Any], object], where: str, what: str) -> Any:
@@ -288,5 +296,11 @@ def load_job(chain: Chain, suffix: str, overrides: Overrides) -> Job:
     resolutions = overrides.resolutions or general.get("resolutions", ["3440x1440"])
     _check(resolutions, lambda v: _strings(v) and v, "resolutions", 'a list, e.g. ["3440x1440"]')
     output = _check(overrides.output or general.get("output", "."), lambda s: isinstance(s, str), "output", "a folder")
+    formats = _check(overrides.formats or general.get("format", "png"),
+                     lambda v: v in FORMATS or (_strings(v) and v and set(v) <= set(FORMATS)), "format",
+                     f'a format or a list of them: {", ".join(FORMATS)}, e.g. ["png", "svg"]')
+    formats = [formats] if isinstance(formats, str) else formats
+    quality = _check(general.get("quality", "lossless"), lambda v: v == "lossless" or (_whole(v) and 1 <= v <= 100),
+                     "quality", '"lossless" or a whole number 1–100 (WebP)')
     return Job(spec, settings, palette, layers, tuple(languages), tuple(Screen.parse(r) for r in resolutions),
-               output, suffix)
+               output, suffix, tuple(dict.fromkeys(formats)), None if quality == "lossless" else quality)

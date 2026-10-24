@@ -32,7 +32,7 @@ language = ["pl", "en"]
 
 - An entry takes `config`, `layouts` and any key of a config file, without its section. The key
   goes where it belongs: `name`, `graphic`, `circles`… to `[wallpaper]`; `language`,
-  `resolutions`, `output` to `[general]`; `colors`, `layout`, `layout_ultrawide` to their own
+  `resolutions`, `output`, `format`, `quality` to `[general]`; `colors`, `layout`, `layout_ultrawide` to their own
   tables.
 - Without `layouts`, an entry is made in the layouts from `layouts` in `[general]`.
 - The recipe's own sections (`[general]`, `[colors]`, `[layout]`…) apply to all its wallpapers.

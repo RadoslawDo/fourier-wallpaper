@@ -7,7 +7,7 @@
 | `fourier.py` | starts the program |
 | `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `recipe.py` (recipes → jobs), `graphic.py` (SVG → outlines and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (drawing one wallpaper and generating the files), `texts.py`, `tables.py` (TOML values for the type checker) |
 | `fourier_wallpaper/modules/` | one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
-| `tests/` | the golden-image test with its reference images, and the recipe tests |
+| `tests/` | the golden-image test with its reference images, the recipe tests and the output-format tests |
 | `config.toml` | the defaults: resolutions, languages, layouts to make, colours, title, number of circles, layout of the modules |
 | `recipes/<name>.toml` | what to make in one run: `default` (used without a recipe; describes the keys), `examples` |
 | `configs/<name>.toml` | one wallpaper each: the graphic, its texts and anything it overrides (keys described in `cachyos.toml`) |
@@ -32,6 +32,8 @@ for pixel with the reference in `tests/golden/`. The program is run through its 
 recipe the test writes), so the test keeps working when the code is reorganised.
 The example recipes (`recipes/example-*.toml`) are compared the same way.
 `tests/test_recipe.py` checks that mistakes in a recipe stop the program with a message.
+`tests/test_formats.py` checks that a lossless WebP has the pixels of the PNG and that the SVG,
+drawn by `rsvg-convert`, looks like it.
 
 After a change that is meant to alter the wallpapers, or after adding a wallpaper or a layout, look
 at the new images and accept them:

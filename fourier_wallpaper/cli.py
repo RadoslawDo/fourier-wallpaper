@@ -3,6 +3,7 @@ import argparse
 import os
 import sys
 
+from .canvas import FORMATS
 from .config import ROOT, Overrides, config_chain, find_config
 from .layout import check_layout
 from .modules import MODULE_NAMES
@@ -29,7 +30,8 @@ def main() -> None:
     ap.add_argument("--hide", action="append", default=[], metavar="MODULE",
                     help=f"do not draw this module (repeatable): {', '.join(MODULE_NAMES)}")
     ap.add_argument("--show", action="append", default=[], metavar="MODULE", help="draw a module turned off in the config")
-    ap.add_argument("-o", "--output", help="directory for the PNG files; {resolution} is replaced, e.g. out/{resolution}")
+    ap.add_argument("-o", "--output", help="directory for the files; {resolution} is replaced, e.g. out/{resolution}")
+    ap.add_argument("-f", "--format", action="append", choices=FORMATS, help="file format (repeatable; default: png)")
     args = ap.parse_args()
 
     modules = {m: {"enabled": False} for m in args.hide} | {m: {"enabled": True} for m in args.show}
@@ -41,7 +43,8 @@ def main() -> None:
             sys.exit(f"--color {kv!r}: KEY=#RRGGBB, e.g. accent=#FF5500")
         colors[key] = val
     overrides = Overrides(colors=colors, circles=args.circles, title=args.title, languages=args.language,
-                          resolutions=args.resolution, output=args.output, modules=modules)
+                          resolutions=args.resolution, output=args.output,
+                          formats=args.format, modules=modules)
     recipe = find_config(args.recipe, RECIPES)
     settings, entries = load_recipe(recipe)
     if args.graphic:

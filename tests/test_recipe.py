@@ -28,6 +28,8 @@ def run(tmp_path: Path, recipe: str) -> subprocess.CompletedProcess[str]:
     ('[[wallpapers]]\nconfig = "tux"\noutlines = 99\n', "has only"),
     ('[[wallpapers]]\nconfig = "tux"\noutlines = 0\n', "outlines = 0: a whole number"),
     ('[general]\nlanguage = ["en"]\n', "no wallpapers"),
+    ('[[wallpapers]]\nconfig = "tux"\nformat = "jpg"\n', "format = 'jpg': a format or a list"),
+    ('[[wallpapers]]\nconfig = "tux"\nquality = 0\n', "quality = 0: \"lossless\" or a whole number"),
 ])
 def test_mistake(tmp_path: Path, recipe: str, message: str) -> None:
     result = run(tmp_path, recipe)

@@ -24,6 +24,7 @@ python3 fourier.py example-split -o /tmp/fourier/{resolution} -r 1720x720 -l en
 - `-w NAME` makes only the wallpaper with that name, e.g.
   `python3 fourier.py examples -w tux-ice`. The names are the `name` keys in the recipe (or in the
   wallpaper files in `configs/`); a file is called `fourier-<name>[-<layout>]-<language>_<resolution>.png`.
+- `-f svg` makes the files in another format (see [below](#choose-the-file-format)).
 
 ## Change the resolution
 
@@ -49,6 +50,30 @@ resolutions = ["2560x1440", "1920x1080"]
 - A screen more than twice as wide as it is high (e.g. 3440×1440) is "ultrawide": it also uses
   `[layout_ultrawide]` (see [Layout](layout.md#ultrawide-screens)).
 - With `{resolution}` in `output` (as in `config.toml`), each resolution gets its own folder.
+
+## Choose the file format
+
+`format` in `[general]` (of `config.toml`, a recipe or an entry) or `-f` on the command line
+(repeatable) sets the format; with several, each wallpaper is made in each one:
+
+```toml
+[general]
+format = ["png", "svg"]           # png (default), webp, svg, pdf
+quality = 90                      # WebP only: 1–100, lossy and smaller; default "lossless"
+```
+
+| Format | What it is |
+|---|---|
+| `png` | the image, lossless |
+| `webp` | the same image, lossless by default (the pixels of the PNG, in a smaller file), or lossy with `quality` |
+| `svg` | vector: sharp at any size; the glow is a blur filter, the text is drawn as outlines (no font needed) |
+| `pdf` | vector, except the glow, which is put on top as an image |
+
+- The size of an SVG or PDF is the resolution, in px (in pt for the PDF), so the text wraps the
+  same way as on the image.
+- An SVG is larger than the PNG (about 1 MB at 1720×720) and slower to show; an image viewer or a
+  wallpaper program may draw it a little differently (the blur, the antialiasing).
+- PNG and WebP come from one drawing; SVG and PDF are each drawn again.
 
 ## Add a language
 

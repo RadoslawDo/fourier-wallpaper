@@ -31,6 +31,7 @@ python3 fourier.py example-split          # one of the layout examples, recipes/
 python3 fourier.py ~/my-desk.toml -w tux  # only the wallpaper named tux from that recipe
 python3 fourier.py configs/tux.toml -l en # one wallpaper file on its own, in English
 python3 fourier.py -r 2560x1440           # another resolution (-r can be repeated)
+python3 fourier.py -f webp -f svg         # other file formats: png (default), webp, svg, pdf
 python3 fourier.py -g drawing.svg -t "MY // WALLPAPER" --color accent=#FF5500
 python3 fourier.py --hide spectrum --hide square    # without some modules
 python3 fourier.py --help
@@ -39,8 +40,8 @@ python3 fourier.py --help
 The options override what the recipe says, for every wallpaper in it. They are meant for quick tries,
 e.g. `-r 1280x800 -o /tmp/test` to see a recipe at a small size.
 
-Output files are named `fourier-<name>[-<layout>]-<language>_<width>x<height>.png`. The layout is left
-out of the name for `default`. They go to the directory set by `output`. `{resolution}` in that path is
+Output files are named `fourier-<name>[-<layout>]-<language>_<width>x<height>.png` (or `.webp`, `.svg`,
+`.pdf`). The layout is left out of the name for `default`. They go to the directory set by `output`. `{resolution}` in that path is
 replaced by e.g. `3440x1440`, so each resolution gets its own folder. A slideshow can then use one
 folder per monitor.
 
@@ -52,7 +53,7 @@ folder per monitor.
   reconstructions, ultrawide screens.
 - [Adding a graphic](docs/adding-a-graphic.md) – step by step, with the ghost example, and how the
   program reads a graphic.
-- [How to…](docs/how-to.md) – run the examples, change the resolution, add a language.
+- [How to…](docs/how-to.md) – run the examples, change the resolution or the file format, add a language.
 - [Development](docs/development.md) – the files of the project, the tests, type checking.
 
 ## Licence
