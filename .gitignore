@@ -1,2 +1,4 @@
 __pycache__/
 *.png
+!tests/golden/**/*.png
+.pytest_cache/

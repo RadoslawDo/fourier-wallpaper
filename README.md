@@ -194,6 +194,29 @@ only has `[layout]` still beats the `[layout_ultrawide]` from `config.toml`.
   - `type = "circle"` finds the largest disc of that colour near the point. Use it when the shape
     merges with other lines.
 
+## Tests
+
+```sh
+.venv/bin/pip install -r requirements-dev.txt     # pytest
+.venv/bin/python -m pytest -q
+```
+
+`tests/test_golden.py` generates every wallpaper in `configs/` in every layout in `layouts/` (and
+the default one) at 640×400 (16:10), 640×360 (16:9) and 860×360 (21:9). It compares each image pixel
+for pixel with the reference in `tests/golden/`. The program is run through its command line, so the
+test keeps working when the code is reorganised.
+
+After a change that is meant to alter the wallpapers, or after adding a wallpaper or a layout, look
+at the new images and accept them:
+
+```sh
+.venv/bin/python -m pytest -q --update-golden
+```
+
+The references also depend on the fonts and on the cairo, librsvg and OpenCV builds, so they may
+need updating after a system update. At this small size, changes below about a tenth of a pixel
+can go unnoticed.
+
 ## Licence
 
 The code and the configuration and language files are under the [MIT licence](LICENSE).
