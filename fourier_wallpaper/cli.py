@@ -23,7 +23,7 @@ def main() -> None:
     ap.add_argument("-l", "--language", action="append",
                     help="language code, e.g. en, pl (file languages/<code>.toml; repeatable)")
     ap.add_argument("-r", "--resolution", action="append", help="e.g. 3440x1440 (repeatable)")
-    ap.add_argument("-t", "--title", help='text on the title block, e.g. "AMBERFROST // FOURIER"')
+    ap.add_argument("-t", "--title", help='text on the title block, e.g. "MY // WALLPAPER"')
     ap.add_argument("-n", "--circles", type=int, help="K: the chain has 2K+1 circles")
     ap.add_argument("--color", action="append", default=[], metavar="KEY=#RRGGBB",
                     help="colour from [colors]: background, accent, accent2, text, lines, details")

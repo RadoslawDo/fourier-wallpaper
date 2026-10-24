@@ -147,7 +147,7 @@ class WallpaperSpec:
 class RenderSettings:
     circles: int = 40                                 # K: the chain has 2K+1 circles
     reconstructions: tuple[int, ...] = (1, 3, 8, 30)  # N of each reconstruction frame
-    title: str = "FOURIER"
+    title: str = "FOURIER WALLPAPER"
     revision: str = "A"
     font: str = "Hack"
 
