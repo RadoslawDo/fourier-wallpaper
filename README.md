@@ -22,6 +22,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # or: uv ve
 
 Building pycairo needs the cairo headers (on Arch they come with the `cairo` package).
 
+With [direnv](https://direnv.net), `.envrc` turns the virtual environment on in the project folder
+(once: `direnv allow`), so `python3 fourier.py` uses it.
+
 ## Usage
 
 ```sh
