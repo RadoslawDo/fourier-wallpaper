@@ -28,4 +28,7 @@ config = "gentoo"
 config = "gnu"
 
 [[wallpapers]]
+config = "nixos"
+
+[[wallpapers]]
 config = "tux"

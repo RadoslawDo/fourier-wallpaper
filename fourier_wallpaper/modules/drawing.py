@@ -3,8 +3,10 @@ import math
 
 import numpy as np
 
+from collections.abc import Callable
+
 from ..canvas import col
-from ..graphic import Circle
+from ..graphic import Circle, Point
 from ..series import Complexes, Floats
 from .base import Box, Module, Option, RenderContext
 
@@ -17,10 +19,8 @@ class Drawing(Module):
     }
 
     def draw(self, ctx: RenderContext, box: Box) -> None:
-        sh, b, S, k, f, lang = ctx.sheet, ctx.sheet.b, ctx.sheet.S, ctx.palette, ctx.series, ctx.lang
-        ACCENT, ACCENT2, BG, LINES = k.accent, k.accent2, k.background, k.lines
-        OUTLINE, extras, cn = ctx.shape.outline, ctx.shape.extras, f.cn
-        K = ctx.settings.circles     # terms n = -K..K
+        sh, b, S, k, f = ctx.sheet, ctx.sheet.b, ctx.sheet.S, ctx.palette, ctx.series
+        outlines = ctx.shape.outlines
         T0 = 0.90                    # the moment the drawing is "frozen"
         labels_on = box.opts["labels"]
         # the graphic fills the box height (or width); "align" pushes it to the left / right edge of the box
@@ -28,24 +28,38 @@ class Drawing(Module):
         gw = min(box.w, box.h * (BX1 - BX0) / (BY1 - BY0))
         cx = {"left": box.x + gw / 2, "center": box.x + box.w / 2, "right": box.x + box.w - gw / 2}[box.opts["align"]]
         sc, Z, Pt = f.placer(cx, box.y + box.h / 2, box.w, box.h)
-        # inner lines of the graphic and the target outline – thin, like a drawing underneath
-        b.new_path(); b.set_source_rgba(1, 1, 1, 0.025)
-        b.move_to(*Pt(*OUTLINE[0]))
-        for p in OUTLINE[1:]:
-            b.line_to(*Pt(*p))
-        b.close_path(); b.fill()
+        # inner lines of the graphic and the target outlines – thin, like a drawing underneath
+        for o in outlines:
+            b.new_path(); b.set_source_rgba(1, 1, 1, 0.025)
+            b.move_to(*Pt(*o[0]))
+            for p in o[1:]:
+                b.line_to(*Pt(*p))
+            b.close_path(); b.fill()
         for d in ctx.shape.details:
             sh.poly([Pt(*p) for p in d], col(k.details), 1.5 * S, close=True)
-        sh.poly([Pt(*p) for p in OUTLINE], col(LINES), 1.5 * S, close=True, dash=[10 * S, 7 * S])
+        for o in outlines:
+            sh.poly([Pt(*p) for p in o], col(k.lines), 1.5 * S, close=True, dash=[10 * S, 7 * S])
+        # each outline is drawn by its own chain; the other ones are caught at earlier moments
+        for i in range(len(outlines)):
+            self.chain(ctx, i, T0 * (1 - 0.45 * i / len(outlines)), sc, Z, labels_on and i == 0)
+
+        self.small_shapes(ctx, box, sc, Z, Pt, labels_on)
+
+    def chain(self, ctx: RenderContext, part: int, t: float, sc: float, Z: Callable[[complex], Point],
+              labels_on: bool) -> None:
+        """The trace of one outline for 0..t and its chain of circles at the moment t."""
+        sh, S, k, cn = ctx.sheet, ctx.sheet.S, ctx.palette, ctx.series.cns[part]
+        ACCENT, ACCENT2 = k.accent, k.accent2
+        K = ctx.settings.circles     # terms n = -K..K
         # trace: reconstruction from 2K+1 circles for t = 0..T0 (slight ripples show at the corners)
-        ts = np.linspace(0, T0, 3000 if K <= 40 else 10000)
-        sh.poly([Z(v) for v in f.recon(K, ts)], col(ACCENT), 3.2 * S, glow=True)
+        ts = np.linspace(0, t, 3000 if K <= 40 else 10000)
+        sh.poly([Z(v) for v in ctx.series.recon(K, ts, part)], col(ACCENT), 3.2 * S, glow=True)
         # chain of circles: c₀ (centre), then from the largest
         order = sorted([n for n in range(-K, K + 1) if n], key=lambda n: -abs(cn[n]))
         pos = cn[0]
         labels = 0
         for n in order:
-            v = cn[n] * np.exp(2j * np.pi * n * T0)
+            v = cn[n] * np.exp(2j * np.pi * n * t)
             r = abs(v) * sc
             x0, y0 = Z(pos)
             if r > 1.2 * S:
@@ -59,13 +73,17 @@ class Drawing(Module):
                 sh.formula(f"c_{{{n}}}", mx_ + 8 * S, my_ - 8 * S, 15, col(ACCENT2, 0.8)); labels += 1
             pos = nxt
         tx_, ty_ = Z(pos)
-        sh.disc(tx_, ty_, 7 * S, col(ACCENT), glow=True); sh.disc(tx_, ty_, 3 * S, col(BG))
+        sh.disc(tx_, ty_, 7 * S, col(ACCENT), glow=True); sh.disc(tx_, ty_, 3 * S, col(k.background))
         cx_, cy_ = Z(cn[0])
         sh.disc(cx_, cy_, 5 * S, col(k.text, 0.8))
         if labels_on:
             sh.formula("c_{0}", cx_ - 34 * S, cy_ + 24 * S, 15, sh.TEXT)
 
-        # --- small shapes: circle = one term, ellipse = two (n = 1 and n = −1) ---
+    def small_shapes(self, ctx: RenderContext, box: Box, sc: float, Z: Callable[[complex], Point],
+                     Pt: Callable[[float, float], Point], labels_on: bool) -> None:
+        """Small shapes: circle = one term, ellipse = two (n = 1 and n = −1)."""
+        sh, b, S, k, f, lang, extras = ctx.sheet, ctx.sheet.b, ctx.sheet.S, ctx.palette, ctx.series, ctx.lang, ctx.shape.extras
+        ACCENT, ACCENT2, LINES = k.accent, k.accent2, k.lines
         nx = len(extras)
         for i, e in enumerate(extras):
             done = 1.0 - 0.38 * (nx - 1 - i) / max(1, nx - 1)       # different drawing phases, the last one complete

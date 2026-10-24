@@ -1,0 +1,22 @@
+# NixOS (the snowflake). Overrides ../config.toml (the keys are described in cachyos.toml).
+# The snowflake is six separate lambdas: each is an outline of its own (outlines = 6).
+
+[general]
+reconstructions = [1, 3, 8, 30]
+
+[wallpaper]
+name = "nixos"
+graphic = "../graphics/nixos.svg"             # nixos-artwork: logo/nix-snowflake-colours.svg
+tag = "NIXOS"
+outlines = 6
+graphic_colors = 1
+[wallpaper.texts.en]
+noun = "lambda"
+closing = "Six lambdas, six chains of circles – each turns at its own pace, so here they are caught at different moments. The lambdas are polygons with sharp corners, so they need many circles (right-hand column)."
+spectrum = "one lambda – a polygon: falls off as 1/n²"
+author = "NixOS logo: Simon Frankau, Tim Cuthbertson, CC BY 4.0"
+[wallpaper.texts.pl]
+noun = "lambdy"
+closing = "Sześć lambd, sześć łańcuchów okręgów – tu każdy jest uchwycony w innej chwili. Lambdy to wielokąty z ostrymi narożnikami, dlatego potrzebują wielu okręgów (kolumna po prawej)."
+spectrum = "jedna lambda – wielokąt: maleje jak 1/n²"
+author = "Logo NixOS: Simon Frankau, Tim Cuthbertson, CC BY 4.0"

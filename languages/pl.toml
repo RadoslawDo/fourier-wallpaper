@@ -10,6 +10,7 @@ theory_1 = "Obrys {noun} to krzywa zamknięta. Każdy jej punkt zapisujemy jako 
 theory_2 = "Każdą taką krzywą da się złożyć z okręgów obracających się ze stałymi prędkościami – n-ty okrąg robi n obrotów, gdy punkt obiega całą krzywą raz:"
 theory_3 = "Współczynniki to promienie i kąty startowe okręgów:"
 theory_4 = "Tutaj: 2048 punktów obrysu → FFT → {count} {circles} (n = −{K}…{K}). Łańcuch zaczyna się w środku ciężkości obrysu (składnik n = 0), a jego koniec rysuje ślad."
+theory_parts = "Grafika składa się z {parts} osobnych części. Każda jest osobną krzywą zamkniętą, z własnym szeregiem i własnym łańcuchem okręgów: razem {total} {circles}."
 theory_5 = "n > 0: obrót przeciwnie do ruchu wskazówek zegara, n < 0: zgodnie z nim."
 default_noun = "kształtu"
 closing_circle = "Okrąg to dokładnie jeden składnik, dlatego każdy mały okrąg rysuje jeden wektor."

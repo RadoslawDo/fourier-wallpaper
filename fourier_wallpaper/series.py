@@ -20,11 +20,12 @@ class Series:
 
     def __init__(self, shape: Shape):
         self.shape = shape
-        pts = shape.outline + [p for e in shape.extras for p in e.extent]
+        pts = [p for o in shape.outlines for p in o] + [p for e in shape.extras for p in e.extent]
         xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
         self.bbox = min(xs), max(xs), min(ys), max(ys)
         self.mid = (self.bbox[0] + self.bbox[1]) / 2, (self.bbox[2] + self.bbox[3]) / 2
-        self.cn = self.fourier(shape.outline)
+        self.cns = [self.fourier(o) for o in shape.outlines]     # one series per outline
+        self.cn = self.cns[0]                                    # of the main outline
 
     def fourier(self, poly_: list[Point], M: int = 2048) -> dict[int, complex]:
         """Coefficients cₙ of a closed curve (a polygon sampled at equal arc lengths)."""
@@ -41,8 +42,9 @@ class Series:
         z = np.array([(x - mx0) - 1j * (y - my0) for x, y in pts])
         return {int(n): complex(c) for n, c in zip(np.fft.fftfreq(M, 1 / M), np.fft.fft(z) / M)}
 
-    def recon(self, K: int, ts: Floats) -> Complexes:
-        return sum((self.cn[n] * np.exp(2j * np.pi * n * ts) for n in range(-K, K + 1)), np.zeros_like(ts, complex))
+    def recon(self, K: int, ts: Floats, part: int = 0) -> Complexes:
+        cn = self.cns[part]
+        return sum((cn[n] * np.exp(2j * np.pi * n * ts) for n in range(-K, K + 1)), np.zeros_like(ts, complex))
 
     def placer(self, cx: float, cy: float, w: float, h: float) -> tuple[
             float, Callable[[complex], Point], Callable[[float, float], Point]]:

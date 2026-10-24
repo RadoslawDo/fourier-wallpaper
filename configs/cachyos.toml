@@ -3,7 +3,9 @@
 #
 # [wallpaper] keys: name (in the file name), tag (on the title block), graphic – an SVG file (relative
 # to this file). Outline = outer contour of the graphic; separate small shapes next to it (like logo
-# dots) are found automatically. Small shapes INSIDE (pupils) have to be pointed to in "extras":
+# dots) are found automatically. outlines = N: the N largest separate parts are each an outline of
+# their own, with their own chain of circles (default 1; nixos.toml has 6).
+# Small shapes INSIDE (pupils) have to be pointed to in "extras":
 # x, y – position as a fraction of the width/height of the whole SVG canvas, type:
 #   "shape"  – the whole single-colour shape at that point (circle or ellipse),
 #   "circle" – the largest disc that fits in that colour (when the shape merges with other lines).

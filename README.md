@@ -168,6 +168,8 @@ only has `[layout]` still beats the `[layout_ultrawide]` from `config.toml`.
      shape. Separate small parts next to it (like the dots of a logo) are fine: each is drawn as a
      circle or an ellipse. Other separate parts, such as text, would also become ellipses, so
      remove them.
+   - A graphic made of several large separate parts (like the six lambdas of the NixOS snowflake)
+     needs `outlines = 6`: then each part has its own outline and its own chain of circles.
    - Colours matter only for the inner lines: they are the boundaries between regions of
      different colour.
 
@@ -236,6 +238,8 @@ only has `[layout]` still beats the `[layout_ultrawide]` from `config.toml`.
 ## How the graphic is read
 
 - **Outline:** the outer contour of the whole graphic. A chain of 2K+1 circles draws it (`circles` = K).
+  With `outlines = N`, the N largest separate parts each have their own outline and chain. The
+  spectrum shows the largest one.
 - **Inner lines:** the boundaries between regions of different colour. Colours are found by
   k-means; `graphic_colors` is how many colours to split the graphic into.
 - **Small shapes next to the outline** (e.g. the dots of a logo) are found automatically.
@@ -290,3 +294,4 @@ The graphics in `graphics/` keep their own licences. See [graphics/LICENSES.md](
 | `archlinux.svg` | Arch Linux logo from Arch's `filesystem` package (0BSD), without the "TM". A trademark: non-commercial use under the Arch Linux trademark policy |
 | `debian.svg` | Debian Open Use Logo © Software in the Public Interest. LGPL-3+ or CC BY-SA 3.0 |
 | `gentoo.svg` | Gentoo signet © Gentoo Foundation, Lennart Andre Rolland. CC BY-SA 2.5; also a Gentoo trademark |
+| `nixos.svg` | NixOS snowflake by Simon Frankau and Tim Cuthbertson. CC BY 4.0 |

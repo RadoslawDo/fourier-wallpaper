@@ -11,6 +11,7 @@ theory_1 = "The outline of the {noun} is a closed curve. We write each of its po
 theory_2 = "Any such curve can be built from circles rotating at constant speeds – the n-th circle makes n turns while the point travels once around the curve:"
 theory_3 = "The coefficients are the radii and starting angles of the circles:"
 theory_4 = "Here: 2048 outline points → FFT → {count} {circles} (n = −{K}…{K}). The chain starts at the centroid of the outline (the n = 0 term), and its tip draws the trace."
+theory_parts = "The graphic has {parts} separate parts. Each one is a closed curve of its own, with its own series and its own chain of circles: {total} {circles} in all."
 theory_5 = "n > 0: counter-clockwise rotation, n < 0: clockwise."
 default_noun = "shape"
 # last paragraph of the theory when the wallpaper has none of its own (depends on the kind of small shapes)

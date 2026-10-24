@@ -21,6 +21,11 @@ class Theory(Module):
         y = sh.para(lang["theory_3"], TX, y, TW)
         y += 8 * S; sh.formula("c_{n} = ∫_{0}^{1} z(t) e^{-2πint} dt", TX + 14 * S, y + 6 * S, 22); y += 54 * S
         y = sh.para(lang["theory_4"].format(count=2 * K + 1, circles=plural(2 * K + 1, lang), K=K), TX, y, TW)
+        parts = len(ctx.shape.outlines)
+        if parts > 1:
+            y += 10 * S
+            y = sh.para(lang["theory_parts"].format(parts=parts, total=parts * (2 * K + 1),
+                                                    circles=plural(parts * (2 * K + 1), lang)), TX, y, TW)
         y += 10 * S
         y = sh.para(lang["theory_5"], TX, y, TW)
         y += 10 * S

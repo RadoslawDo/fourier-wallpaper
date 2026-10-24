@@ -63,7 +63,7 @@ def merge_chain(chain: Chain) -> Table:
 SETTINGS = {"circles", "reconstructions", "title", "revision", "font", "graphic_colors"}   # [general] or [wallpaper]
 SECTIONS: dict[str, set[str] | None] = {
     "general": SETTINGS | {"language", "resolutions", "layouts", "output"},
-    "wallpaper": SETTINGS | {"name", "graphic", "tag", "extras", "texts", "colors"},
+    "wallpaper": SETTINGS | {"name", "graphic", "tag", "outlines", "extras", "texts", "colors"},
     "colors": None, "layout": None, "layout_ultrawide": None,        # checked by Palette / check_layout
 }
 
@@ -134,6 +134,7 @@ class WallpaperSpec:
     graphic: str
     tag: str
     graphic_colors: int = 3
+    outlines: int = 1           # separate parts drawn as outlines, the largest first
     extras: tuple[ExtraHint, ...] = ()
     texts: dict[str, WallpaperTexts] = field(default_factory=dict[str, WallpaperTexts])
 
@@ -249,6 +250,8 @@ def load_job(chain: Chain, suffix: str, overrides: Overrides) -> Job:
     spec = WallpaperSpec(name=t["name"], graphic=t["graphic"], tag=t["tag"],
                          graphic_colors=_check(get("graphic_colors", 3), lambda n: _whole(n) and n >= 1,
                                                "graphic_colors", "a whole number ≥ 1"),
+                         outlines=_check(t.get("outlines", 1), lambda n: _whole(n) and n >= 1,
+                                         "[wallpaper] outlines", "a whole number ≥ 1"),
                          extras=tuple(extras), texts=texts)
 
     d = RenderSettings()

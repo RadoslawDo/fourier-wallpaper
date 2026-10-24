@@ -35,8 +35,11 @@ class Reconstruction(Module):
             fx, fy = box.x + (fw + gap) * (c % cols), top + (fh + gap) * (c // cols)
             sh.frame(fx, fy, fw, fh)
             sh.formula(f"N = {Kr}", fx + 14 * S, fy + 28 * S, 16, col(k.accent, 0.85))
-            sh.text(f"{2 * Kr + 1} {plural(2 * Kr + 1, lang)}", fx + 14 * S, fy + 50 * S, 13)
+            count = len(ctx.shape.outlines) * (2 * Kr + 1)          # every outline has its own chain
+            sh.text(f"{count} {plural(count, lang)}", fx + 14 * S, fy + 50 * S, 13)
             _, Zr, Pr = f.placer(fx + fw * 0.58, fy + fh * 0.5, fw * 0.66, fh * 0.76)
-            sh.poly([Pr(*p) for p in ctx.shape.outline], col(k.lines), 1.2 * S, close=True, dash=[6 * S, 5 * S])
+            for o in ctx.shape.outlines:
+                sh.poly([Pr(*p) for p in o], col(k.lines), 1.2 * S, close=True, dash=[6 * S, 5 * S])
             tr = np.linspace(0, 1, 1500 if Kr <= 40 else 6000)
-            sh.poly([Zr(v) for v in f.recon(Kr, tr)], col(k.accent), 2.2 * S, glow=True, close=True)
+            for part in range(len(ctx.shape.outlines)):
+                sh.poly([Zr(v) for v in f.recon(Kr, tr, part)], col(k.accent), 2.2 * S, glow=True, close=True)

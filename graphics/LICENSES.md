@@ -55,3 +55,13 @@ wallpaper, follow the graphic's licence as well.
   and of Förderverein Gentoo e.V.
 - **Sharing a generated wallpaper:** credit the authors and share it under the same licence. The
   generated wallpaper shows the credit above the title block.
+
+## nixos.svg – NixOS snowflake
+
+- **Source:** https://github.com/NixOS/nixos-artwork, `logo/nix-snowflake-colours.svg` (the
+  repository is archived, read-only).
+- **Authors:** designed by Simon Frankau, revised by Tim Cuthbertson.
+- **Licence:** CC BY 4.0 (per the repository's `logo/README.md`). The logo is also used as a mark
+  of the NixOS project; trademark questions go to the NixOS Foundation.
+- **Sharing a generated wallpaper:** credit the authors. The generated wallpaper shows the credit
+  above the title block.

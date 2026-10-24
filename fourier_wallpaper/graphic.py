@@ -55,10 +55,14 @@ class Curve:
 @dataclass(frozen=True)
 class Shape:
     """What is taken from the graphic."""
-    outline: list[Point]                 # outer contour of the whole graphic (closed)
+    outlines: list[list[Point]]          # outer contours of the largest separate parts, the largest first (closed)
     details: list[list[Point]]           # inner lines: boundaries between colour regions (closed)
     extras: list[Circle | Curve]         # small shapes, the largest first
-    inside: MatLike                      # 1 inside the outline (raster size)
+    inside: MatLike                      # 1 inside the outlines (raster size)
+
+    @property
+    def outline(self) -> list[Point]:    # the main one: the largest part
+        return self.outlines[0]
 
 
 def raster(svg: str, height: int = 1600) -> MatLike:
@@ -96,9 +100,11 @@ def analyze(spec: WallpaperSpec) -> Shape:
     h, w = im.shape[:2]
     a = im[..., 3] > 128
     outer = sorted(contours(a, cv2.RETR_EXTERNAL), key=cv2.contourArea, reverse=True)
-    main = outer[0]
+    if len(outer) < spec.outlines:
+        sys.exit(f"{spec.graphic}: outlines = {spec.outlines}, but the graphic has only {len(outer)} separate parts")
+    main, parts = outer[0], outer[:spec.outlines]
     inside = np.zeros((h, w), np.uint8)
-    cv2.drawContours(inside, [main], -1, 1, -1)
+    cv2.drawContours(inside, parts, -1, 1, -1)
     # colours: k-means in Lab space on the pixels inside the outline, then the boundaries of each colour region
     lab = cv2.cvtColor(np.ascontiguousarray(im[..., :3]), cv2.COLOR_BGR2LAB).reshape(-1, 3).astype(np.float32)
     sel = np.flatnonzero((a & (inside > 0)).ravel())
@@ -117,7 +123,7 @@ def analyze(spec: WallpaperSpec) -> Shape:
         m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
         details += [as_pts(c) for c in contours(m, cv2.RETR_CCOMP)]
     # small shapes: separate ones next to the outline and the ones pointed to in the config
-    extras: list[Circle | Curve] = [classify(c) for c in outer[1:] if cv2.contourArea(c) > 3e-4 * cv2.contourArea(main)]
+    extras: list[Circle | Curve] = [classify(c) for c in outer[spec.outlines:] if cv2.contourArea(c) > 3e-4 * cv2.contourArea(main)]
     for e in spec.extras:
         x, y = int(e.x * w), int(e.y * h)
         same: npt.NDArray[np.bool_] = (labels == labels[y, x]) & a
@@ -132,4 +138,4 @@ def analyze(spec: WallpaperSpec) -> Shape:
             _, comp = cv2.connectedComponents(same.astype(np.uint8))
             extras.append(classify(contours(comp == comp[y, x], cv2.RETR_EXTERNAL)[0]))
     extras.sort(key=lambda e: -e.size)
-    return Shape(as_pts(main), details, extras, inside)
+    return Shape([as_pts(c) for c in parts], details, extras, inside)

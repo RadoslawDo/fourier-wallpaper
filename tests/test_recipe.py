@@ -25,6 +25,8 @@ def run(tmp_path: Path, recipe: str) -> subprocess.CompletedProcess[str]:
     ('[[wallpapers]]\ngraphic = "x.svg"\nname = "x"\n', "[wallpaper] tag is missing"),
     ('[[wallpapers]]\nconfig = "tux"\nlayout = { theory = { columns = 2 } }\n', "unknown keys ['columns']"),
     ('wallpapers = 3\n', "wallpapers must be a list of tables"),
+    ('[[wallpapers]]\nconfig = "tux"\noutlines = 99\n', "has only"),
+    ('[[wallpapers]]\nconfig = "tux"\noutlines = 0\n', "outlines = 0: a whole number"),
     ('[general]\nlanguage = ["en"]\n', "no wallpapers"),
 ])
 def test_mistake(tmp_path: Path, recipe: str, message: str) -> None:
