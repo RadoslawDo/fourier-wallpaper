@@ -1,0 +1,21 @@
+# Arch Linux. Overrides ../config.toml (the keys are described in cachyos.toml).
+
+[general]
+circles = 80                                   # sharp tips of the "A" need more circles
+reconstructions = [1, 4, 12, 60]
+
+[wallpaper]
+name = "archlinux"
+graphic = "../graphics/archlinux.svg"         # /usr/share/pixmaps/archlinux-logo.svg, without the "TM"
+tag = "ARCH LINUX"
+graphic_colors = 1
+[wallpaper.texts.en]
+noun = "Arch logo"
+closing = "The outline has three sharp tips and a smooth arch inside. Each corner needs many high-frequency terms – with few circles the tips come out rounded (right-hand column)."
+spectrum = "sharp tips – the spectrum falls off slowly"
+author = "Arch Linux logo – a trademark of Arch Linux"
+[wallpaper.texts.pl]
+noun = "logo Archa"
+closing = "Obrys ma trzy ostre wierzchołki i gładki łuk w środku. Każdy narożnik wymaga wielu składników o wysokiej częstotliwości – przy niewielu okręgach wierzchołki wychodzą zaokrąglone (kolumna po prawej)."
+spectrum = "ostre wierzchołki – widmo maleje powoli"
+author = "Logo Arch Linux – znak towarowy Arch Linux"

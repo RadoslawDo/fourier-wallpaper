@@ -287,3 +287,6 @@ The graphics in `graphics/` keep their own licences. See [graphics/LICENSES.md](
 | `heckert_gnu.svg` | GNU head by Etienne Suvasa, vector version by Aurelio A. Heckert. Free Art License (also CC BY-SA 2.0 / GPLv3+) |
 | `tux.svg` | Tux by Larry Ewing and The GIMP, from the Inkscape package. Free to use with credit to the authors |
 | `cachyos.svg` | CachyOS logo from `cachyos-settings` (GPL-1.0-only). Also a CachyOS trademark |
+| `archlinux.svg` | Arch Linux logo from Arch's `filesystem` package (0BSD), without the "TM". A trademark: non-commercial use under the Arch Linux trademark policy |
+| `debian.svg` | Debian Open Use Logo © Software in the Public Interest. LGPL-3+ or CC BY-SA 3.0 |
+| `gentoo.svg` | Gentoo signet © Gentoo Foundation, Lennart Andre Rolland. CC BY-SA 2.5; also a Gentoo trademark |

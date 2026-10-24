@@ -1,0 +1,21 @@
+# Debian (the Open Use Logo without the word). Overrides ../config.toml (keys described in cachyos.toml).
+
+[general]
+circles = 80                                   # the thin tail of the swirl needs more circles
+reconstructions = [1, 4, 12, 60]
+
+[wallpaper]
+name = "debian"
+graphic = "../graphics/debian.svg"            # https://www.debian.org/logos/openlogo-nd.svg
+tag = "DEBIAN"
+graphic_colors = 1
+[wallpaper.texts.en]
+noun = "Debian swirl"
+closing = "The swirl is one long, thin shape that turns back on itself, and the small separate drops at its ends are each drawn as an ellipse – two terms. The thin tail needs the most circles (right-hand column)."
+spectrum = "a long thin shape – many terms matter"
+author = "Debian Open Use Logo © SPI, LGPL-3+ / CC BY-SA 3.0"
+[wallpaper.texts.pl]
+noun = "spirali Debiana"
+closing = "Spirala to jeden długi, cienki kształt, który zawraca sam do siebie, a małe osobne krople przy jej końcach rysuje każda elipsa – dwa składniki. Cienki ogon wymaga najwięcej okręgów (kolumna po prawej)."
+spectrum = "długi, cienki kształt – liczy się wiele składników"
+author = "Debian Open Use Logo © SPI, LGPL-3+ / CC BY-SA 3.0"

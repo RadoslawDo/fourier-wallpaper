@@ -13,7 +13,16 @@
 # See examples.toml.
 
 [[wallpapers]]
+config = "archlinux"
+
+[[wallpapers]]
 config = "cachyos"
+
+[[wallpapers]]
+config = "debian"
+
+[[wallpapers]]
+config = "gentoo"
 
 [[wallpapers]]
 config = "gnu"

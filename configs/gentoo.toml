@@ -1,0 +1,20 @@
+# Gentoo (the signet, the "g" without the word). Overrides ../config.toml (keys described in cachyos.toml).
+
+[general]
+reconstructions = [1, 3, 8, 30]
+
+[wallpaper]
+name = "gentoo"
+graphic = "../graphics/gentoo.svg"            # https://www.gentoo.org/assets/img/logo/gentoo-signet.svg
+tag = "GENTOO"
+graphic_colors = 3
+[wallpaper.texts.en]
+noun = "Gentoo signet"
+closing = "The signet is a smooth, rounded shape with one notch – a few circles already give its form, and the notch appears once the higher terms are added (right-hand column)."
+spectrum = "smooth shape – the spectrum falls off quickly"
+author = "Gentoo signet © Gentoo Foundation, L. A. Rolland, CC BY-SA 2.5"
+[wallpaper.texts.pl]
+noun = "sygnetu Gentoo"
+closing = "Sygnet to gładki, zaokrąglony kształt z jednym wcięciem – już kilka okręgów oddaje jego formę, a wcięcie pojawia się po dodaniu wyższych składników (kolumna po prawej)."
+spectrum = "gładki kształt – widmo szybko maleje"
+author = "Sygnet Gentoo © Gentoo Foundation, L. A. Rolland, CC BY-SA 2.5"
