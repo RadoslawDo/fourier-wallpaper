@@ -259,6 +259,7 @@ def load_job(chain, suffix, overrides):
 
     # module layout: built-in, then every file in turn, then the command line; the [layout_ultrawide] of a file
     # is used only on ultrawide screens and wins over the [layout] of the same file (not over later files)
+    check_layout(LAYOUT, "built-in layout"); check_layout(LAYOUT_ULTRAWIDE, "built-in layout_ultrawide")
     layers = [(LAYOUT, False), (LAYOUT_ULTRAWIDE, True)]
     for path, c in chain:
         for key, wide in (("layout", False), ("layout_ultrawide", True)):

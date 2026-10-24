@@ -1,8 +1,9 @@
 """Where the modules go: boxes from the [layout] / [layout_ultrawide] tables."""
 import sys
-from collections import namedtuple
+from dataclasses import dataclass
+from typing import Any
 
-from .modules import MODULE_NAMES as MODULES
+from .modules import BY_NAME
 
 # Box of each module: x, y – top-left corner, w, h – size. A number is px on a 1440 px high screen (scaled with the
 # height), "N%" – percent of the screen width (x, w) or height (y, h). A negative x / y is the distance of the
@@ -26,34 +27,35 @@ LAYOUT_ULTRAWIDE = {
     "spectrum": {"x": 790, "y": 948, "w": 690, "h": 392},
 }
 
-KEYS = {"enabled", "x", "y", "w", "h", "scale", "direction", "columns", "empty", "labels", "align"}
-
-Box = namedtuple("Box", "x y w h scale opts")
+@dataclass(frozen=True)
+class Box:
+    """Where a module goes, in px of the screen, and the values of all its options (defaults filled in)."""
+    x: float
+    y: float
+    w: float
+    h: float
+    scale: float
+    opts: dict[str, Any]
 
 
 def check_layout(table, where):
     for m, opts in table.items():
-        if m not in MODULES:
-            sys.exit(f"{where}: unknown module {m!r} (modules: {', '.join(MODULES)})")
-        if set(opts) - KEYS:
-            sys.exit(f"{where}.{m}: unknown keys {sorted(set(opts) - KEYS)} (keys: {', '.join(sorted(KEYS))})")
+        if m not in BY_NAME:
+            sys.exit(f"{where}: unknown module {m!r} (modules: {', '.join(BY_NAME)})")
+        if not isinstance(opts, dict):
+            sys.exit(f"{where}.{m} = {opts!r}: a table, e.g. {{ enabled = false }}")
+        keys = BY_NAME[m].keys()
+        if set(opts) - set(keys):
+            sys.exit(f"{where}.{m}: unknown keys {sorted(set(opts) - set(keys))} (keys of {m}: {', '.join(keys)})")
         for k, v in opts.items():
-            if k in "xywh" and not (isinstance(v, (int, float)) or isinstance(v, str) and v.endswith("%")):
-                sys.exit(f'{where}.{m}.{k} = {v!r}: a number or "N%"')
-        if opts.get("align", "center") not in ("left", "center", "right"):
-            sys.exit(f'{where}.{m}.align: "left", "center" or "right"')
-        if opts.get("direction", "column") not in ("column", "row"):
-            sys.exit(f'{where}.{m}.direction: "column" or "row"')
-        if not (isinstance(opts.get("columns", 1), int) and opts.get("columns", 1) >= 1):
-            sys.exit(f"{where}.{m}.columns: a whole number ≥ 1")
-        if not (isinstance(opts.get("empty", []), list) and all(isinstance(c, int) for c in opts.get("empty", []))):
-            sys.exit(f"{where}.{m}.empty: a list of cell numbers, e.g. [0, 1]")
+            if not keys[k].ok(v):
+                sys.exit(f"{where}.{m}.{k} = {v!r}: {keys[k].what}")
 
 
 def layout(layers, W, H, S):
     """Boxes of the enabled modules. layers: (table, ultrawide only) pairs, later ones win key by key."""
     uw = W / H > 2
-    mods = {m: {"enabled": True} for m in MODULES}
+    mods = {m: {k: o.default for k, o in cls.keys().items()} for m, cls in BY_NAME.items()}
     for table, wide in layers:
         if uw or not wide:
             for m, opts in table.items():
@@ -74,5 +76,6 @@ def layout(layers, W, H, S):
     for m, o in mods.items():
         if o["enabled"]:
             w, h = size(o.get("w", 0), W), size(o.get("h", 0), H)
-            boxes[m] = Box(position(o.get("x", 0), w, W), position(o.get("y", 0), h, H), w, h, o.get("scale", 1.0), o)
+            boxes[m] = Box(position(o.get("x", 0), w, W), position(o.get("y", 0), h, H), w, h, o.get("scale", 1.0),
+                           {k: v for k, v in o.items() if k in BY_NAME[m].options})
     return boxes

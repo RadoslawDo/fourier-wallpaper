@@ -73,7 +73,7 @@ Building pycairo needs the cairo headers (on Arch they come with the `cairo` pac
 | File | Contents |
 |---|---|
 | `fourier.py` | starts the program |
-| `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `graphic.py` (SVG → outline and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (drawing one wallpaper and generating the files), `texts.py`; `modules/` – one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py` |
+| `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `graphic.py` (SVG → outline and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (drawing one wallpaper and generating the files), `texts.py`; `modules/` – one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
 | `tests/` | the golden-image test and its reference images (see [Tests](#tests)) |
 | `config.toml` | the defaults: resolutions, languages, layouts to make, colours, title, number of circles, layout of the modules |
 | `configs/<name>.toml` | one wallpaper each: the graphic, its texts and anything it overrides (keys described in `cachyos.toml`) |
@@ -110,6 +110,8 @@ title          = { x = -60, y = -40, w = 420, h = 96, scale = 1.2 }
   - `empty = [0, 1]` leaves those grid cells empty, e.g. for a desktop widget. Cells are numbered
     row by row from 0.
 - `grid` only has `enabled`. `theory` has no `h`, because the text sets its height.
+- A key a module does not have (e.g. `columns` on `theory`) or a wrong value stops the program
+  with a message listing that module's keys.
 
 `[layout_ultrawide]` is used on top of `[layout]` when the screen is more than twice as wide as it
 is high. Each file applies its `[layout]` and then its `[layout_ultrawide]`, so a layout file that

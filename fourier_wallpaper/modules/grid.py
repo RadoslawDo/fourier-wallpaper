@@ -1,9 +1,10 @@
-"""Grid of the sheet (the box is not used)."""
+"""Grid of the sheet (it has no box)."""
 from .base import Module, RenderContext
 
 
 class Grid(Module):
     name = "grid"
+    box = ""
 
     def draw(self, ctx: RenderContext, box):
         b, S, W, H = ctx.sheet.b, ctx.sheet.S, ctx.sheet.W, ctx.sheet.H

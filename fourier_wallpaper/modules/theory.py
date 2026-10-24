@@ -6,6 +6,7 @@ from .base import Module, RenderContext
 
 class Theory(Module):
     name = "theory"
+    box = "xyw"                      # the text sets the height
 
     def draw(self, ctx: RenderContext, box):
         sh, S, lang, texts = ctx.sheet, ctx.sheet.S, ctx.lang, ctx.texts

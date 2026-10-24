@@ -5,11 +5,15 @@ import numpy as np
 
 from ..canvas import col
 from ..graphic import Circle
-from .base import Module, RenderContext
+from .base import Module, Option, RenderContext
 
 
 class Drawing(Module):
     name = "drawing"
+    options = {
+        "labels": Option(True, lambda v: isinstance(v, bool), "true or false"),       # c₀, c₁… and the small shapes
+        "align": Option("center", lambda v: v in ("left", "center", "right"), '"left", "center" or "right"'),
+    }
 
     def draw(self, ctx: RenderContext, box):
         sh, b, S, k, f, lang = ctx.sheet, ctx.sheet.b, ctx.sheet.S, ctx.palette, ctx.series, ctx.lang
@@ -17,11 +21,11 @@ class Drawing(Module):
         OUTLINE, extras, cn = ctx.shape.outline, ctx.shape.extras, f.cn
         K = ctx.settings.circles     # terms n = -K..K
         T0 = 0.90                    # the moment the drawing is "frozen"
-        labels_on = box.opts.get("labels", True)
+        labels_on = box.opts["labels"]
         # the graphic fills the box height (or width); "align" pushes it to the left / right edge of the box
         BX0, BX1, BY0, BY1 = f.bbox
         gw = min(box.w, box.h * (BX1 - BX0) / (BY1 - BY0))
-        cx = {"left": box.x + gw / 2, "center": box.x + box.w / 2, "right": box.x + box.w - gw / 2}[box.opts.get("align", "center")]
+        cx = {"left": box.x + gw / 2, "center": box.x + box.w / 2, "right": box.x + box.w - gw / 2}[box.opts["align"]]
         sc, Z, Pt = f.placer(cx, box.y + box.h / 2, box.w, box.h)
         # inner lines of the graphic and the target outline – thin, like a drawing underneath
         b.new_path(); b.set_source_rgba(1, 1, 1, 0.025)
