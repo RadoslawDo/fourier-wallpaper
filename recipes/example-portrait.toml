@@ -1,0 +1,24 @@
+# Example: a portrait screen (a phone, a monitor turned on its side) – the drawing at the top, the
+# reconstructions in a row under it, the title block at the bottom.
+#   python3 fourier.py example-portrait
+#
+# The layout of config.toml is made for landscape screens; on a portrait one its modules overlap, so this
+# recipe sets its own. Sizes in "%" follow the screen, so the same layout fits 1080x1920 and 1440x3200.
+# A number of px is on a 1440 px high screen: on 1920 px it is × 1.33, on 3200 px × 2.22 (docs/layout.md).
+
+[general]
+resolutions = ["1080x1920", "1440x3200"]  # 9:16 and a 20:9 phone
+format = "webp"                           # lossless by default; quality = 85 would make it lossy and smaller
+
+[[wallpapers]]
+config = "archlinux"
+name = "archlinux-portrait"
+reconstructions = [1, 3, 10]              # three frames in the row
+
+[wallpapers.layout]
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+drawing        = { x = "6%", y = "6%", w = "88%", h = "52%" }
+reconstruction = { x = "6%", y = "64%", w = "88%", h = "18%", direction = "row" }
+title          = { x = -40, y = -40, w = "60%", h = 80 }

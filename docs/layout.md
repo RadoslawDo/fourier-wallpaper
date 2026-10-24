@@ -64,12 +64,13 @@ beats the `[layout_ultrawide]` from `config.toml`.
 Each of these recipes makes one wallpaper with an unusual layout, written in the recipe itself, with
 comments on how it is set (`python3 fourier.py example-split` and so on):
 
-| Recipe | Layout |
-|---|---|
-| `recipes/example-split.toml` | the large drawing on one half, the reconstructions in a grid on the other |
-| `recipes/example-theory.toml` | only the theory and the square-wave example, larger (`scale`) |
-| `recipes/example-grid.toml` | only the sheet and its grid – every other module turned off |
-| `recipes/example-three.toml` | three reconstructions in a row, filling the whole screen |
+| Recipe | Layout | Resolutions, format |
+|---|---|---|
+| `recipes/example-split.toml` | the large drawing on one half, the reconstructions in a grid on the other | 16:10 and 21:9, PNG and SVG |
+| `recipes/example-theory.toml` | only the theory and the square-wave example, larger (`scale`) | 2560×1440, PDF |
+| `recipes/example-grid.toml` | only the sheet and its grid – every other module turned off | 4K to 1366×768, lossy WebP |
+| `recipes/example-three.toml` | three reconstructions in a row, filling the whole screen | 32:9 and 21:9, PNG |
+| `recipes/example-portrait.toml` | a portrait screen (a phone): the drawing above the reconstructions | 9:16 and 20:9, WebP |
 
 The layout goes into the entry (`[wallpapers.layout]`), so it wins over the layouts of
 `config.toml` and of the wallpaper file. Modules that are not named keep their place from

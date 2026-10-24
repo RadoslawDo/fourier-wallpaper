@@ -6,6 +6,10 @@
 # To keep the top-left corner free for a desktop widget on an ultrawide screen, add e.g.
 #   [wallpapers.layout_ultrawide]
 #   reconstruction = { x = 960, w = -1020 }
+# The row fits wide screens: 32:9 (two monitors' worth) and 21:9.
+
+[general]
+resolutions = ["5120x1440", "3440x1440"]
 
 [[wallpapers]]
 config = "tux"

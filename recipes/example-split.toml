@@ -5,6 +5,11 @@
 # config.toml and of the wallpaper file. Every module not named here keeps its place from config.toml,
 # so the ones that should not be drawn are turned off one by one.
 # Sizes: "50%" of the screen width; h = -120 is the screen height less 2 × 60 px (see docs/layout.md).
+# 16:10 and 21:9 (ultrawide: [layout_ultrawide] below), each as PNG and SVG.
+
+[general]
+resolutions = ["1920x1200", "2560x1080"]
+format = ["png", "svg"]
 
 [[wallpapers]]
 config = "ghost"

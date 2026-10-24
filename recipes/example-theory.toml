@@ -3,6 +3,12 @@
 #
 # "scale" makes the text and lines of a module larger. The theory has no h: its text sets the height.
 # The graphic is still read (the theory names it and counts its circles), but it is not drawn.
+# A text to read, so as PDF (vector), in two languages.
+
+[general]
+resolutions = ["2560x1440"]
+language = ["pl", "en"]
+format = "pdf"
 
 [[wallpapers]]
 config = "gnu"

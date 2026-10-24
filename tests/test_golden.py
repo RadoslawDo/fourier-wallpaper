@@ -51,7 +51,8 @@ def generated(tmp_path_factory: pytest.TempPathFactory, request: pytest.FixtureR
     recipe.write_text("".join(f'[[wallpapers]]\nconfig = "{w}"\nlayouts = {layouts!r}\nlanguage = ["{lang}"]\n'
                               for w in WALLPAPERS for lang in ("pl", "en")
                               for layouts in [sorted({lt for w_, lt, l_ in RUNS if w_ == w and l_ == lang})]))
-    cmd = [sys.executable, os.path.join(ROOT, "fourier.py"), str(recipe), "-o", os.path.join(out, "{resolution}")]
+    # the recipes' own resolutions and formats are replaced: the test compares small PNG files
+    cmd = [sys.executable, os.path.join(ROOT, "fourier.py"), str(recipe), "-f", "png", "-o", os.path.join(out, "{resolution}")]
     subprocess.run(cmd + [a for r in RESOLUTIONS for a in ("-r", r)], check=True, capture_output=True, text=True)
     recipe.unlink()
     for path in EXAMPLES:

@@ -5,15 +5,18 @@
 The examples are recipes in `recipes/`. A recipe is given by its name (or a path):
 
 ```sh
-python3 fourier.py examples          # recipes/examples.toml: variants and other layouts
+python3 fourier.py examples          # recipes/examples.toml: variants, layouts, formats, resolutions
 python3 fourier.py example-split     # the drawing on one half, the reconstructions on the other
 python3 fourier.py example-theory    # only the theory and the square wave
 python3 fourier.py example-grid      # only the sheet and its grid
 python3 fourier.py example-three     # three reconstructions in a row
+python3 fourier.py example-portrait  # a portrait screen, e.g. a phone
 ```
 
-They write their files to the folder from `output` in `config.toml`: `output/<resolution>/` in the
-project folder (ignored by git).
+Each one sets its own resolutions and formats (from 1366×768 to 5120×1440 and portrait 1440×3200;
+PNG, WebP, SVG, PDF), so together they show what the program can do. They write their files to the
+folder from `output` in `config.toml`: `output/<resolution>/` in the project folder (ignored by git).
+`-r` and `-f` on the command line replace the resolutions and formats of the recipe.
 To look at them first, send them somewhere else and make them smaller, which is also faster:
 
 ```sh

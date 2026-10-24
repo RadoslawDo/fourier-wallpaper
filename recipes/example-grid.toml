@@ -4,6 +4,12 @@
 # Every module except "grid" is turned off. A wallpaper still needs a graphic (here nixos), because
 # the program always reads one, but nothing of it is drawn – any wallpaper gives the same sheet.
 # Without the grid as well (grid = { enabled = false }) only the background with its gradient is left.
+# Lossy WebP: the sheet is mostly smooth gradient, so a low quality still looks the same and is small.
+
+[general]
+resolutions = ["3840x2160", "1920x1080", "1366x768"]
+format = "webp"
+quality = 75
 
 [[wallpapers]]
 config = "nixos"

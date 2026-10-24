@@ -1,36 +1,57 @@
 # Examples: python3 fourier.py examples (or recipes/examples.toml). Keys are described in default.toml.
 # The files go to the output folder from ../config.toml (output/ in the project folder); to try them elsewhere: -o /tmp/fourier/{resolution}.
+# Each entry shows other features: layouts, variants, formats, resolutions, languages, texts.
 
+# for every wallpaper below, unless its entry says otherwise
 [general]
 language = ["pl"]
+resolutions = ["2560x1440", "1920x1080"]  # 16:9 – each one gets its own folder (output/2560x1440…)
+format = ["png", "webp"]                  # both from one drawing
+quality = 90                              # the WebP files lossy (smaller); default "lossless"
 
-# minimal: only the sheet and the GNU head in the middle, at the left and at the right edge
+# minimal: only the sheet and the GNU head in the middle, at the left and at the right edge – as SVG,
+# which stays sharp at any size
 [[wallpapers]]
 config = "gnu"
 layouts = ["bare", "bare-left", "bare-right"]
+format = "svg"
 
-# the whole screen covered by reconstructions of Tux in a grid
+# the whole screen covered by reconstructions of Tux in a grid, in 4K
 [[wallpapers]]
 config = "tux"
 layouts = ["reconstruction-grid"]
+resolutions = ["3840x2160"]
 
-# a variant: Tux in other colours, without the spectrum, with more circles – it needs its own name
+# a variant: Tux in other colours, without the spectrum, with more circles and other settings – it needs
+# its own name; in Polish and English
 [[wallpapers]]
 config = "tux"
 name = "tux-ice"
+language = ["pl", "en"]
 circles = 60
+reconstructions = [2, 5, 12, 60]          # four frames, the last one with all the circles
+title = "ICE // FOURIER"
+revision = "B  2026"
+font = "DejaVu Sans Mono"                 # any font with Σ ∫ π
 colors = { accent = "#7FD4FF", accent2 = "#B48CFF" }
 layout = { spectrum = { enabled = false } }
 
-# the example graphic of docs/adding-a-graphic.md, in the layout with the drawing at the right edge
+# the example graphic of docs/adding-a-graphic.md, also in the layout with the drawing at the right edge;
+# as PDF, in a folder of its own (relative to this file)
 [[wallpapers]]
 config = "ghost"
 layouts = ["default", "bare-right"]
+format = "pdf"
+output = "../output/pdf"
 
-# a graphic without a file in configs/ (name, graphic and tag are then required)
+# a graphic without a file in configs/ (name, graphic and tag are then required), with its own texts,
+# on a 32:9 screen
 [[wallpapers]]
 graphic = "../graphics/cachyos.svg"
 name = "cachyos-plain"
 tag = "CACHYOS"
 layouts = ["minimal"]
 language = ["en"]
+resolutions = ["5120x1440"]
+format = "png"
+texts = { en = { noun = "logo", author = "CachyOS logo – a trademark of CachyOS" } }
