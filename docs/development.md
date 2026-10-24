@@ -30,6 +30,7 @@ A new module is a `Module` subclass in its own file in `modules/`, added to `MOD
 the default one) at 640×400 (16:10), 640×360 (16:9) and 860×360 (21:9). It compares each image pixel
 for pixel with the reference in `tests/golden/`. The program is run through its command line (with a
 recipe the test writes), so the test keeps working when the code is reorganised.
+The example recipes (`recipes/example-*.toml`) are compared the same way.
 `tests/test_recipe.py` checks that mistakes in a recipe stop the program with a message.
 
 After a change that is meant to alter the wallpapers, or after adding a wallpaper or a layout, look

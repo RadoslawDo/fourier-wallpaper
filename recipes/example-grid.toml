@@ -1,0 +1,18 @@
+# Example: only the sheet – the background and its grid, no graphic and no texts.
+#   python3 fourier.py example-grid
+#
+# Every module except "grid" is turned off. A wallpaper still needs a graphic (here nixos), because
+# the program always reads one, but nothing of it is drawn – any wallpaper gives the same sheet.
+# Without the grid as well (grid = { enabled = false }) only the background with its gradient is left.
+
+[[wallpapers]]
+config = "nixos"
+name = "grid"
+
+[wallpapers.layout]
+drawing        = { enabled = false }
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+reconstruction = { enabled = false }
+title          = { enabled = false }

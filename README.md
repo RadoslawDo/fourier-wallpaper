@@ -27,6 +27,7 @@ Building pycairo needs the cairo headers (on Arch they come with the `cairo` pac
 ```sh
 python3 fourier.py                        # the wallpapers of recipes/default.toml
 python3 fourier.py examples               # recipes/examples.toml (a name in recipes/ or any path)
+python3 fourier.py example-split          # one of the layout examples, recipes/example-*.toml
 python3 fourier.py ~/my-desk.toml -w tux  # only the wallpaper named tux from that recipe
 python3 fourier.py configs/tux.toml -l en # one wallpaper file on its own, in English
 python3 fourier.py -r 2560x1440           # another resolution (-r can be repeated)

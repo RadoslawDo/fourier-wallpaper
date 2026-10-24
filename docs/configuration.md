@@ -39,7 +39,8 @@ language = ["pl", "en"]
 - Two entries that would make the same file, or an unknown key, stop the program before anything
   is generated.
 - `recipes/default.toml` (used when no recipe is given) describes all the keys.
-  `recipes/examples.toml` has examples.
+  `recipes/examples.toml` has examples of variants and layouts, and `recipes/example-*.toml` one
+  unusual layout each (see [Layout](layout.md#examples)).
 - A wallpaper file from `configs/` can also be given instead of a recipe
   (`python3 fourier.py configs/tux.toml`): it is made on its own, in the layouts from `[general]`.
 

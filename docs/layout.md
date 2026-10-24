@@ -59,6 +59,22 @@ is high. By default the top-left corner then stays empty, for a desktop widget. 
 its `[layout]` and then its `[layout_ultrawide]`, so a layout file that only has `[layout]` still
 beats the `[layout_ultrawide]` from `config.toml`.
 
+## Examples
+
+Each of these recipes makes one wallpaper with an unusual layout, written in the recipe itself, with
+comments on how it is set (`python3 fourier.py example-split` and so on):
+
+| Recipe | Layout |
+|---|---|
+| `recipes/example-split.toml` | the large drawing on one half, the reconstructions in a grid on the other |
+| `recipes/example-theory.toml` | only the theory and the square-wave example, larger (`scale`) |
+| `recipes/example-grid.toml` | only the sheet and its grid – every other module turned off |
+| `recipes/example-three.toml` | three reconstructions in a row, filling the whole screen |
+
+The layout goes into the entry (`[wallpapers.layout]`), so it wins over the layouts of
+`config.toml` and of the wallpaper file. Modules that are not named keep their place from
+`config.toml`, so the ones that should not be drawn are turned off one by one.
+
 ## Layout files
 
 | File | Layout |

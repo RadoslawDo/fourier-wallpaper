@@ -1,0 +1,21 @@
+# Example: three reconstructions in a row, filling the whole screen.
+#   python3 fourier.py example-three
+#
+# One frame per item of "reconstructions" – three items, three frames. direction = "row" puts them
+# side by side (the same as columns = 3). x, y = 60 and w, h = -120 leave a 60 px margin on each side.
+# To keep the top-left corner free for a desktop widget on an ultrawide screen, add e.g.
+#   [wallpapers.layout_ultrawide]
+#   reconstruction = { x = 960, w = -1020 }
+
+[[wallpapers]]
+config = "tux"
+name = "tux-three"
+reconstructions = [2, 6, 40]
+
+[wallpapers.layout]
+drawing        = { enabled = false }
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+title          = { enabled = false }
+reconstruction = { x = 60, y = 60, w = -120, h = -120, direction = "row" }

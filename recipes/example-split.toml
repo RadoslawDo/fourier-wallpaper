@@ -1,0 +1,25 @@
+# Example: the large drawing on one side, the reconstructions on the other – nothing else.
+#   python3 fourier.py example-split
+#
+# The layout is written in the entry itself ([wallpapers.layout]), so it wins over the layout of
+# config.toml and of the wallpaper file. Every module not named here keeps its place from config.toml,
+# so the ones that should not be drawn are turned off one by one.
+# Sizes: "50%" of the screen width; h = -120 is the screen height less 2 × 60 px (see docs/layout.md).
+
+[[wallpapers]]
+config = "ghost"
+name = "ghost-split"                     # its own name: fourier-ghost-split-<language>_<resolution>.png
+reconstructions = [1, 2, 4, 8, 16, 32]   # six frames: 2 columns × 3 rows
+
+[wallpapers.layout]
+theory         = { enabled = false }
+square         = { enabled = false }
+spectrum       = { enabled = false }
+title          = { enabled = false }
+drawing        = { x = 60, y = 60, w = "50%", h = -120 }
+reconstruction = { x = -60, y = 60, w = "40%", h = -120, columns = 2 }
+
+# config.toml moves the drawing on ultrawide screens – here it should stay where [layout] puts it
+[wallpapers.layout_ultrawide]
+drawing        = { x = 60, y = 60, w = "50%", h = -120 }
+reconstruction = { columns = 3 }         # a wider box: 3 columns × 2 rows

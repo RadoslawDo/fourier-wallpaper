@@ -1,0 +1,21 @@
+# Example: only the theory and the square-wave example, larger than usual – no drawing.
+#   python3 fourier.py example-theory
+#
+# "scale" makes the text and lines of a module larger. The theory has no h: its text sets the height.
+# The graphic is still read (the theory names it and counts its circles), but it is not drawn.
+
+[[wallpapers]]
+config = "gnu"
+name = "gnu-theory"
+
+[wallpapers.layout]
+drawing        = { enabled = false }
+spectrum       = { enabled = false }
+reconstruction = { enabled = false }
+title          = { enabled = false }
+theory         = { x = "8%", y = "12%", w = "36%", scale = 1.5 }
+square         = { x = "52%", y = "30%", w = "40%", h = "40%", scale = 1.5 }
+
+[wallpapers.layout_ultrawide]
+theory         = { x = "14%", y = "12%", w = "30%", scale = 1.5 }
+square         = { x = "50%", y = "30%", w = "34%", h = "40%", scale = 1.5 }

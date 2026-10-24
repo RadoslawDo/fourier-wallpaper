@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 import numpy as np
@@ -26,12 +27,20 @@ def names(folder: str) -> list[str]:
     return sorted(os.path.splitext(os.path.basename(p))[0] for p in glob.glob(os.path.join(ROOT, folder, "*.toml")))
 
 
+def example_names(path: str) -> list[str]:
+    with open(path, "rb") as f:
+        return [e["name"] for e in tomllib.load(f)["wallpapers"]]
+
+
 WALLPAPERS = names("configs")
 LAYOUTS = ["default"] + names("layouts")
 # every layout in Polish; the default layout also in English (the texts differ, the drawing does not)
 RUNS = [(w, layout, "pl") for w in WALLPAPERS for layout in LAYOUTS] + [(w, "default", "en") for w in WALLPAPERS]
 CASES = [f"{res}/fourier-{w}{'' if layout == 'default' else '-' + layout}-{lang}_{res}.png"
          for w, layout, lang in RUNS for res in RESOLUTIONS]
+# the example recipes (recipes/example-*.toml), in Polish: one wallpaper each, named in the recipe
+EXAMPLES = sorted(glob.glob(os.path.join(ROOT, "recipes", "example-*.toml")))
+CASES += [f"{res}/fourier-{name}-pl_{res}.png" for path in EXAMPLES for name in example_names(path) for res in RESOLUTIONS]
 
 
 @pytest.fixture(scope="session")
@@ -45,6 +54,9 @@ def generated(tmp_path_factory: pytest.TempPathFactory, request: pytest.FixtureR
     cmd = [sys.executable, os.path.join(ROOT, "fourier.py"), str(recipe), "-o", os.path.join(out, "{resolution}")]
     subprocess.run(cmd + [a for r in RESOLUTIONS for a in ("-r", r)], check=True, capture_output=True, text=True)
     recipe.unlink()
+    for path in EXAMPLES:
+        subprocess.run(cmd[:2] + [path, "-l", "pl"] + cmd[3:] + [a for r in RESOLUTIONS for a in ("-r", r)],
+                       check=True, capture_output=True, text=True)
     if request.config.getoption("--update-golden"):
         shutil.rmtree(GOLDEN, ignore_errors=True)
         shutil.copytree(out, GOLDEN)
