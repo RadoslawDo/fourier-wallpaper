@@ -1,0 +1,29 @@
+# The preview images of the README: python3 fourier.py github-examples
+# Each one with another graphic and another layout, all in English, written to docs/images/ (committed to
+# git – run this again after a change that alters the wallpapers, and commit the new images).
+
+[general]
+language = ["en"]
+resolutions = ["1920x1080"]
+output = "../docs/images"                 # one folder, no {resolution}: README links to these files
+format = "webp"
+quality = 90                              # lossy: about 100 kB per image (lossless: about 1 MB)
+
+[[wallpapers]]
+config = "tux"                            # the full layout: every module
+
+[[wallpapers]]
+config = "nixos"
+layouts = ["minimal"]
+
+[[wallpapers]]
+config = "gnu"
+layouts = ["reconstruction-grid"]
+
+[[wallpapers]]
+config = "debian"
+layouts = ["row"]
+
+[[wallpapers]]
+config = "cachyos"
+resolutions = ["3440x1440"]               # ultrawide: [layout_ultrawide], the top-left corner left free

@@ -10,6 +10,17 @@ SVG graphic on a technical-drawing sheet. Around the drawing are:
 
 Texts come from language files. English and Polish are included.
 
+![Tux drawn by epicycles, with the theory, the square wave, the spectrum and the reconstructions](docs/images/fourier-tux-en_1920x1080.webp)
+
+| | |
+|---|---|
+| ![NixOS](docs/images/fourier-nixos-minimal-en_1920x1080.webp) | ![GNU](docs/images/fourier-gnu-reconstruction-grid-en_1920x1080.webp) |
+| NixOS, `minimal` layout: six parts, six chains of circles | GNU, `reconstruction-grid`: 20 reconstructions |
+| ![Debian](docs/images/fourier-debian-row-en_1920x1080.webp) | ![CachyOS](docs/images/fourier-cachyos-en_3440x1440.webp) |
+| Debian, `row`: the reconstructions along the bottom | CachyOS on an ultrawide screen (3440×1440) |
+
+These previews are made by `python3 fourier.py github-examples` (`recipes/github-examples.toml`).
+
 ## Installation
 
 Requirements: Python 3.11+ (tomllib), pycairo, opencv-python, numpy, Pillow and `rsvg-convert`

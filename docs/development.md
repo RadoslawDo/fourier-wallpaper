@@ -10,7 +10,7 @@
 | `fourier_wallpaper/modules/` | one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
 | `tests/` | the golden-image test with its reference images, the recipe tests and the output-format tests |
 | `config.toml` | the defaults: resolutions, languages, layouts to make, colours, title, number of circles, layout of the modules |
-| `recipes/<name>.toml` | what to make in one run: `default` (used without a recipe; describes the keys), `template` (every option, commented, for a new wallpaper), `examples`, `example-*` |
+| `recipes/<name>.toml` | what to make in one run: `default` (used without a recipe; describes the keys), `template` (every option, commented, for a new wallpaper), `examples`, `example-*`, `github-examples` (the README previews) |
 | `configs/<name>.toml` | one wallpaper each: the graphic, its texts and anything it overrides (keys described in `cachyos.toml`) |
 | `layouts/<name>.toml` | layouts of the modules (see [Layout](layout.md#layout-files)) |
 | `languages/<code>.toml` | all texts (see [Configuration](configuration.md#languages)) |
@@ -37,7 +37,8 @@ The example recipes (`recipes/example-*.toml`) are compared the same way.
 drawn by `rsvg-convert`, looks like it.
 
 After a change that is meant to alter the wallpapers, or after adding a wallpaper or a layout, look
-at the new images and accept them:
+at the new images and accept them (and remake the README previews in `docs/images/` with
+`python3 fourier.py github-examples`):
 
 ```sh
 .venv/bin/python -m pytest -q --update-golden
