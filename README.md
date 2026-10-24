@@ -52,6 +52,7 @@ folder per monitor.
   reconstructions, ultrawide screens.
 - [Adding a graphic](docs/adding-a-graphic.md) – step by step, with the ghost example, and how the
   program reads a graphic.
+- [How to…](docs/how-to.md) – run the examples, change the resolution, add a language.
 - [Development](docs/development.md) – the files of the project, the tests, type checking.
 
 ## Licence

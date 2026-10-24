@@ -78,6 +78,6 @@ the wrong kind, stop the program with a message naming the key.
 ## Languages
 
 All texts are in `languages/<code>.toml`. To add a language, copy `en.toml` and translate the
-values. `plural_rule` picks how the word "circle" is inflected after a number (`en`, `pl`). The
+values (step by step in [How to…](how-to.md#add-a-language)). `plural_rule` picks how the word "circle" is inflected after a number (`en`, `pl`). The
 texts that belong to one graphic (its noun, the last paragraph of the theory, the credit) are in
 `[wallpaper.texts.<code>]` of its config file.

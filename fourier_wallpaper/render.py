@@ -49,6 +49,10 @@ def generate(job: Job) -> None:
             sys.exit(f"language {language!r}: no file languages/{language}.toml")
         with open(path, "rb") as f:
             lang = tomllib.load(f)
+        with open(os.path.join(ROOT, "languages", "en.toml"), "rb") as f:
+            missing = sorted(set(tomllib.load(f)) - set(lang))      # en.toml has every key
+        if missing:
+            sys.exit(f"languages/{language}.toml: missing keys {missing} (copy them from en.toml)")
         for screen in job.screens:
             # "{resolution}" in the output path gives a folder per resolution (e.g. one per monitor for a slideshow)
             os.makedirs(job.folder(screen), exist_ok=True)
