@@ -31,7 +31,7 @@ class Series:
         return dict(zip(np.fft.fftfreq(M, 1 / M).astype(int), np.fft.fft(z) / M))
 
     def recon(self, K, ts):
-        return sum(self.cn[n] * np.exp(2j * np.pi * n * ts) for n in range(-K, K + 1))
+        return sum((self.cn[n] * np.exp(2j * np.pi * n * ts) for n in range(-K, K + 1)), np.zeros_like(ts, complex))
 
     def placer(self, cx, cy, w, h):
         """The graphic fitted into a w × h box centred at (cx, cy): scale, complex → sheet, graphic px → sheet."""

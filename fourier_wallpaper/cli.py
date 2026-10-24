@@ -5,7 +5,8 @@ import os
 import sys
 
 from .config import CONFIGS, LAYOUTS, ROOT, Overrides, config_chain, find_config, load_job, merge_chain
-from .layout import MODULES, check_layout
+from .layout import check_layout
+from .modules import MODULE_NAMES
 from .render import generate
 
 
@@ -29,7 +30,7 @@ def main():
     ap.add_argument("--color", action="append", default=[], metavar="KEY=#RRGGBB",
                     help="colour from [colors]: background, accent, accent2, text, lines, details")
     ap.add_argument("--hide", action="append", default=[], metavar="MODULE",
-                    help=f"do not draw this module (repeatable): {', '.join(MODULES)}")
+                    help=f"do not draw this module (repeatable): {', '.join(MODULE_NAMES)}")
     ap.add_argument("--show", action="append", default=[], metavar="MODULE", help="draw a module turned off in the config")
     ap.add_argument("-o", "--output", help="directory for the PNG files; {resolution} is replaced, e.g. out/{resolution}")
     args = ap.parse_args()

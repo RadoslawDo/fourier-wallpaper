@@ -2,8 +2,7 @@
 import sys
 from collections import namedtuple
 
-
-MODULES = ("grid", "drawing", "theory", "square", "spectrum", "reconstruction", "title")   # in drawing order
+from .modules import MODULE_NAMES as MODULES
 
 # Box of each module: x, y – top-left corner, w, h – size. A number is px on a 1440 px high screen (scaled with the
 # height), "N%" – percent of the screen width (x, w) or height (y, h). A negative x / y is the distance of the
