@@ -71,7 +71,9 @@ Building pycairo needs the cairo headers (on Arch they come with the `cairo` pac
 
 | File | Contents |
 |---|---|
-| `fourier.py` | the program |
+| `fourier.py` | starts the program |
+| `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `graphic.py` (SVG → outline and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (the modules and generating the files), `texts.py` |
+| `tests/` | the golden-image test and its reference images (see [Tests](#tests)) |
 | `config.toml` | the defaults: resolutions, languages, layouts to make, colours, title, number of circles, layout of the modules |
 | `configs/<name>.toml` | one wallpaper each: the graphic, its texts and anything it overrides (keys described in `cachyos.toml`) |
 | `layouts/<name>.toml` | layouts of the modules: `minimal` (only the drawing and the title block), `bare`, `bare-left`, `bare-right` (only the drawing, no texts – in the middle, at the left or right edge), `row` (reconstructions in a row at the bottom), `reconstruction-grid` (the whole screen: 20 reconstructions in a grid) |
