@@ -4,6 +4,7 @@
 # A wallpaper file has a [wallpaper] table (the graphic and its texts); any file can have any section from
 # here. A file can also build on another one with extends = "other.toml" (relative to that file).
 # Values from [general] and [colors] can be overridden on the command line (python3 fourier.py --help).
+# More in docs/configuration.md.
 
 [general]
 language = ["pl", "en"]                        # files languages/<language>.toml; one language: "pl"
@@ -29,7 +30,8 @@ lines = "#4A4A4A"                              # target outline (dashed), header
 details = "#333333"                            # inner lines of the graphic
 
 # ---------------------------------------------------------------------------------------------
-# Modules of the wallpaper and their boxes. Keys (all optional – missing ones keep the defaults below):
+# Modules of the wallpaper and their boxes (more in docs/layout.md). Keys (all optional – missing ones keep
+# the defaults below):
 #   enabled = false      – the module is not drawn (also: --hide MODULE / --show MODULE on the command line),
 #   x, y                 – top-left corner, w, h – size: a number is px on a 1440 px high screen (scaled with
 #                          the height, so 1920x1200 gets × 0.83), "N%" is percent of the screen width (x, w)

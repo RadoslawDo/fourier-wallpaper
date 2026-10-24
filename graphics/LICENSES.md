@@ -68,6 +68,6 @@ wallpaper, follow the graphic's licence as well.
 
 ## ghost.svg – ghost
 
-- **Source:** drawn for this project as the example graphic of the README ("Adding a graphic").
+- **Source:** drawn for this project as the example graphic of `docs/adding-a-graphic.md`.
 - **Licence:** CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/) – public domain, no
   credit needed.

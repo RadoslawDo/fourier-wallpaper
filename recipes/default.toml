@@ -10,7 +10,7 @@
 #   language, resolutions, output                                 ([general])
 #   colors = { accent = "#FF5500" }, layout = { spectrum = { enabled = false } }, layout_ultrawide = {…}
 # A wallpaper can also be given without a file in configs/: graphic, name and tag instead of config.
-# See examples.toml.
+# See examples.toml and docs/configuration.md.
 
 [[wallpapers]]
 config = "archlinux"

@@ -22,7 +22,7 @@ circles = 60
 colors = { accent = "#7FD4FF", accent2 = "#B48CFF" }
 layout = { spectrum = { enabled = false } }
 
-# the example graphic of the README, in the layout with the drawing at the right edge
+# the example graphic of docs/adding-a-graphic.md, in the layout with the drawing at the right edge
 [[wallpapers]]
 config = "ghost"
 layouts = ["default", "bare-right"]

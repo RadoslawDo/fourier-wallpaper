@@ -1,4 +1,4 @@
-# Ghost – the example graphic from the README ("Adding a graphic"). Overrides ../config.toml
+# Ghost – the example graphic of docs/adding-a-graphic.md. Overrides ../config.toml
 # (the keys are described in cachyos.toml).
 
 [general]

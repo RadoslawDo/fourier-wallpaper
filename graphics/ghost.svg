@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
-  <!-- A ghost drawn for fourier-wallpaper as the example graphic of the README. CC0 1.0. -->
+  <!-- A ghost drawn for fourier-wallpaper as the example graphic of docs/adding-a-graphic.md. CC0 1.0. -->
   <path fill="#ECEFF4" d="M20,110 A80,80 0 0 1 180,110 L180,212 Q160,238 140,212 Q120,186 100,212
                           Q80,238 60,212 Q40,186 20,212 Z"/>
   <circle cx="70" cy="100" r="14" fill="#2E3440"/>
