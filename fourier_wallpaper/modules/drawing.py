@@ -1,9 +1,9 @@
 """Main drawing: epicycles draw the outline."""
 import math
+from collections.abc import Callable
+from typing import ClassVar
 
 import numpy as np
-
-from collections.abc import Callable
 
 from ..canvas import col
 from ..graphic import Circle, Point
@@ -11,9 +11,14 @@ from ..series import Complexes, Floats
 from .base import Box, Module, Option, RenderContext
 
 
+def ellipse(ce: dict[int, complex], t: Floats) -> Complexes:
+    """A small shape as an ellipse: its terms n = 0, 1 and −1."""
+    return ce[0] + ce[1] * np.exp(2j * np.pi * t) + ce[-1] * np.exp(-2j * np.pi * t)
+
+
 class Drawing(Module):
     name = "drawing"
-    options = {
+    options: ClassVar[dict[str, Option]] = {
         "labels": Option(True, lambda v: isinstance(v, bool), "true or false"),       # c₀, c₁… and the small shapes
         "align": Option("center", lambda v: v in ("left", "center", "right"), '"left", "center" or "right"'),
     }
@@ -99,11 +104,9 @@ class Drawing(Module):
                 sh.disc(x0, y0, 2.6 * S, col(ACCENT2)); sh.disc(ex, ey, 5 * S, col(ACCENT), glow=True)
             else:
                 ce = f.fourier(e.points, 512)
-                def ell(t: Floats) -> Complexes:
-                    return ce[0] + ce[1] * np.exp(2j * np.pi * t) + ce[-1] * np.exp(-2j * np.pi * t)
                 tt = np.linspace(0, 1, 400)
-                sh.poly([Z(v) for v in ell(tt)], col(LINES), 1.2 * S, close=True)
-                sh.poly([Z(v) for v in ell(tt * done)], col(ACCENT), 3.2 * S, glow=True)
+                sh.poly([Z(v) for v in ellipse(ce, tt)], col(LINES), 1.2 * S, close=True)
+                sh.poly([Z(v) for v in ellipse(ce, tt * done)], col(ACCENT), 3.2 * S, glow=True)
                 p0 = ce[0]; p1 = p0 + ce[1] * np.exp(2j * np.pi * done); p2 = p1 + ce[-1] * np.exp(-2j * np.pi * done)
                 (x0, y0), (x1, y1), (x2, y2) = Z(p0), Z(p1), Z(p2)
                 sh.circle(x0, y0, abs(ce[1]) * sc, col(ACCENT2, 0.3), 1 * S)

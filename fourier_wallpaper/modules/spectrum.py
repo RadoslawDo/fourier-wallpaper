@@ -1,7 +1,6 @@
 """Spectrum of the outline."""
 import math
 
-
 from ..canvas import col
 from .base import Box, Module, RenderContext
 

@@ -13,7 +13,7 @@ def run(tmp_path: Path, recipe: str) -> subprocess.CompletedProcess[str]:
     path = tmp_path / "recipe.toml"
     path.write_text(recipe)
     return subprocess.run([sys.executable, os.path.join(ROOT, "fourier.py"), str(path), "-r", "64x40",
-                           "-o", str(tmp_path / "out")], capture_output=True, text=True)
+                           "-o", str(tmp_path / "out")], capture_output=True, text=True, check=False)
 
 
 @pytest.mark.parametrize("recipe, message", [

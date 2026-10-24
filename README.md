@@ -145,11 +145,14 @@ title          = { x = -60, y = -40, w = 420, h = 96, scale = 1.2 }
 - Drawing only:
   - `labels = false` leaves out c₀, c₁… and the label at the small shapes.
   - `align = "left"` or `"right"` pushes the graphic to that edge of its box (default `"center"`).
-- Reconstruction only:
-  - `direction = "row"` puts the frames side by side.
-  - `columns = 5` puts them in a grid with that many columns.
-  - `empty = [0, 1]` leaves those grid cells empty, e.g. for a desktop widget. Cells are numbered
-    row by row from 0.
+- Reconstruction only: there is one frame per item of `reconstructions` (in `[general]` or
+  `[wallpaper]`), in a grid of cells that fills the box.
+  - `columns = 5` sets how many cells a row has. There are as many rows as the frames need, so
+    the grid is the same on every screen; only the size of the cells changes.
+  - Without `columns` the frames are in one column, or in one row with `direction = "row"`.
+  - `empty = [0, 1]` leaves those cells free, e.g. for a desktop widget; the frames take the next
+    free cells in order. Cells are numbered row by row from 0, left to right: with `columns = 8`,
+    cells 0–7 are the first row and 8–15 the second. See `layouts/reconstruction-grid.toml`.
 - `grid` only has `enabled`. `theory` has no `h`, because the text sets its height.
 - A key a module does not have (e.g. `columns` on `theory`) or a wrong value stops the program
   with a message listing that module's keys.

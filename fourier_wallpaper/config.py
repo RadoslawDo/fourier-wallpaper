@@ -4,8 +4,8 @@ import os
 import re
 import sys
 import tomllib
-from dataclasses import dataclass, field, fields
 from collections.abc import Callable
+from dataclasses import dataclass, field, fields
 from typing import Any, Literal, Self
 
 from .layout import LAYOUT, LAYOUT_ULTRAWIDE, check_layout

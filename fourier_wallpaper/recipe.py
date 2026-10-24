@@ -4,8 +4,19 @@ import os
 import sys
 from typing import Any
 
-from .config import (CONFIGS, LAYOUTS, ROOT, SECTIONS, Chain, Job, Overrides, config_chain, find_config, load_job,
-                     merge_chain)
+from .config import (
+    CONFIGS,
+    LAYOUTS,
+    ROOT,
+    SECTIONS,
+    Chain,
+    Job,
+    Overrides,
+    config_chain,
+    find_config,
+    load_job,
+    merge_chain,
+)
 from .tables import Table, is_list, is_table
 
 RECIPES = os.path.join(ROOT, "recipes")
