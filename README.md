@@ -15,19 +15,20 @@ Texts come from language files. English and Polish are included.
 | | |
 |---|---|
 | ![NixOS](docs/images/fourier-nixos-minimal-en_1920x1080.webp) | ![GNU](docs/images/fourier-gnu-reconstruction-grid-en_1920x1080.webp) |
-| NixOS, `minimal` layout: six parts, six chains of circles | GNU, `reconstruction-grid`: 20 reconstructions |
+| NixOS, `minimal` layout: six parts, six chains of circles; Nord colours | GNU, `reconstruction-grid`: 20 reconstructions; Gruvbox |
 
 <table>
 <tr>
-<td rowspan="2" width="34%"><img src="docs/images/fourier-gentoo-portrait-en_1080x1920.webp" alt="Gentoo"><br>Gentoo on a portrait monitor (1080×1920), with a layout of its own</td>
-<td><img src="docs/images/fourier-debian-row-en_1920x1080.webp" alt="Debian"><br>Debian, <code>row</code>: the reconstructions along the bottom</td>
+<td rowspan="2" width="34%"><img src="docs/images/fourier-gentoo-portrait-en_1080x1920.webp" alt="Gentoo"><br>Gentoo on a portrait monitor (1080×1920), with a layout of its own; Tokyo Night</td>
+<td><img src="docs/images/fourier-debian-row-en_1920x1080.webp" alt="Debian"><br>Debian, <code>row</code>: the reconstructions along the bottom; Dracula</td>
 </tr>
 <tr>
-<td><img src="docs/images/fourier-cachyos-en_3440x1440.webp" alt="CachyOS"><br>CachyOS on an ultrawide screen (3440×1440)</td>
+<td><img src="docs/images/fourier-cachyos-en_3440x1440.webp" alt="CachyOS"><br>CachyOS on an ultrawide screen (3440×1440); Catppuccin Mocha</td>
 </tr>
 </table>
 
-These previews are made by `python3 fourier.py github-examples` (`recipes/github-examples.toml`).
+Colours are set in `[colors]` (Tux: the default palette). These previews are made by
+`python3 fourier.py github-examples` (`recipes/github-examples.toml`, with the palettes).
 
 ## Installation
 

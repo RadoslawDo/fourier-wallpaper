@@ -1,5 +1,5 @@
 # The preview images of the README: python3 fourier.py github-examples
-# Each one with another graphic and another layout, all in English, written to docs/images/ (committed to
+# Each one with another graphic, another layout and another palette, all in English, written to docs/images/ (committed to
 # git – run this again after a change that alters the wallpapers, and commit the new images).
 
 [general]
@@ -10,29 +10,39 @@ format = "webp"
 quality = 90                              # lossy: about 100 kB per image (lossless: about 1 MB)
 
 [[wallpapers]]
-config = "tux"                            # the full layout: every module
+config = "tux"                            # the full layout: every module; the colours of config.toml
 
 [[wallpapers]]
 config = "nixos"
 layouts = ["minimal"]
+# Nord
+colors = { background = "#2E3440", accent = "#88C0D0", accent2 = "#B48EAD", text = "#D8DEE9", lines = "#4C566A", details = "#3B4252" }
 
 [[wallpapers]]
 config = "gnu"
 layouts = ["reconstruction-grid"]
+# Gruvbox
+colors = { background = "#282828", accent = "#B8BB26", accent2 = "#83A598", text = "#EBDBB2", lines = "#504945", details = "#3C3836" }
 
 [[wallpapers]]
 config = "debian"
 layouts = ["row"]
+# Dracula
+colors = { background = "#282A36", accent = "#FF79C6", accent2 = "#8BE9FD", text = "#F8F8F2", lines = "#44475A", details = "#343746" }
 
 [[wallpapers]]
 config = "cachyos"
 resolutions = ["3440x1440"]               # ultrawide: [layout_ultrawide], the top-left corner left free
+# Catppuccin Mocha
+colors = { background = "#1E1E2E", accent = "#94E2D5", accent2 = "#F5C2E7", text = "#CDD6F4", lines = "#45475A", details = "#313244" }
 
 # a portrait monitor: the layout of config.toml is for landscape screens, so this one has its own
 # (as in example-portrait.toml): the drawing at the top, the reconstructions under it
 [[wallpapers]]
 config = "gentoo"
 name = "gentoo-portrait"
+# Tokyo Night
+colors = { background = "#1A1B26", accent = "#BB9AF7", accent2 = "#7DCFFF", text = "#C0CAF5", lines = "#3B4261", details = "#292E42" }
 resolutions = ["1080x1920"]
 reconstructions = [1, 3, 10]
 
