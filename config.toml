@@ -11,8 +11,9 @@ language = ["pl", "en"]                        # files languages/<language>.toml
 resolutions = ["3440x1440", "1920x1200"]       # every wallpaper in every resolution
 layouts = ["default"]                          # every wallpaper in every layout: names of files in layouts/,
                                                # "default" = no file (only this one and the wallpaper's)
-output = "../{resolution}"                     # directory for the files (relative to this file);
-                                               # {resolution} → a folder per resolution, e.g. ../3440x1440;
+output = "output/{resolution}"                 # directory for the files (relative to this file; output/ is in
+                                               # .gitignore); {resolution} → a folder per resolution, e.g.
+                                               # output/3440x1440; recipes/default.toml sets its own;
                                                # file name: fourier-<wallpaper>[-<layout>]-<language>_<resolution>.png
 format = "png"                                 # png, webp, svg or pdf; several: ["png", "svg"]
 quality = "lossless"                           # of WebP files: "lossless" or 1–100 (smaller files, lossy)

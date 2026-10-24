@@ -12,6 +12,10 @@
 # A wallpaper can also be given without a file in configs/: graphic, name and tag instead of config.
 # See examples.toml and docs/configuration.md.
 
+[general]
+output = "../output/{resolution}"      # where the wallpapers go (relative to this file): output/ in the project
+                                       # folder, ignored by git; {resolution} → output/3440x1440 and so on
+
 [[wallpapers]]
 config = "archlinux"
 

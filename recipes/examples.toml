@@ -1,5 +1,5 @@
 # Examples: python3 fourier.py examples (or recipes/examples.toml). Keys are described in default.toml.
-# The files go to the output folder from ../config.toml; to try them elsewhere: -o /tmp/fourier/{resolution}.
+# The files go to the output folder from ../config.toml (output/ in the project folder); to try them elsewhere: -o /tmp/fourier/{resolution}.
 
 [general]
 language = ["pl"]

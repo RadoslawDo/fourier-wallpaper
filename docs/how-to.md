@@ -12,7 +12,8 @@ python3 fourier.py example-grid      # only the sheet and its grid
 python3 fourier.py example-three     # three reconstructions in a row
 ```
 
-They write their files to the folder from `output` in `config.toml`, next to the other wallpapers.
+They write their files to the folder from `output` in `config.toml`: `output/<resolution>/` in the
+project folder (ignored by git).
 To look at them first, send them somewhere else and make them smaller, which is also faster:
 
 ```sh

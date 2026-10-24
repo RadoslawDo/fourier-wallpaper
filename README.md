@@ -41,9 +41,10 @@ The options override what the recipe says, for every wallpaper in it. They are m
 e.g. `-r 1280x800 -o /tmp/test` to see a recipe at a small size.
 
 Output files are named `fourier-<name>[-<layout>]-<language>_<width>x<height>.png` (or `.webp`, `.svg`,
-`.pdf`). The layout is left out of the name for `default`. They go to the directory set by `output`. `{resolution}` in that path is
-replaced by e.g. `3440x1440`, so each resolution gets its own folder. A slideshow can then use one
-folder per monitor.
+`.pdf`). The layout is left out of the name for `default`. They go to the directory set by `output`:
+`output/<resolution>/` in the project folder (ignored by git), set in `recipes/default.toml` and, for
+the other recipes, in `config.toml`. `{resolution}` in that path is replaced by e.g. `3440x1440`, so
+each resolution gets its own folder. A slideshow can then use one folder per monitor.
 
 ## Documentation
 
