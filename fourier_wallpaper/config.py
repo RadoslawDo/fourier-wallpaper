@@ -5,24 +5,28 @@ import re
 import sys
 import tomllib
 from dataclasses import dataclass, field, fields
-from typing import Literal
+from collections.abc import Callable
+from typing import Any, Literal, Self
 
 from .layout import LAYOUT, LAYOUT_ULTRAWIDE, check_layout
+from .tables import Table, is_list, is_table
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the project folder
 CONFIGS = os.path.join(ROOT, "configs")          # one file per wallpaper (-c <name>)
 LAYOUTS = os.path.join(ROOT, "layouts")          # layouts of the modules (-L <name>)
 
+Chain = list[tuple[str, Table]]                  # the files of a config, base first: (path, contents)
 
-def merge(base, over):
+
+def merge(base: Table, over: Table) -> Table:
     """Config over base: tables merged key by key, other values (also arrays) replaced."""
     out = dict(base)
     for k, v in over.items():
-        out[k] = merge(out[k], v) if isinstance(v, dict) and isinstance(out.get(k), dict) else v
+        out[k] = merge(out[k], v) if is_table(v) and is_table(out.get(k)) else v
     return out
 
 
-def config_chain(path):
+def config_chain(path: str) -> Chain:
     """The files a config is made of, base first: what it "extends" (if anything), then the file itself.
     Paths in a file are relative to that file."""
     with open(path, "rb") as f:
@@ -36,7 +40,7 @@ def config_chain(path):
     return (config_chain(os.path.join(cdir, base)) if base else []) + [(os.path.abspath(path), cfg)]
 
 
-def find_config(name, folder):
+def find_config(name: str, folder: str) -> str:
     """-c / -L: a path, or a bare name of a file in the folder (e.g. "tux" → configs/tux.toml)."""
     for path in (name, os.path.join(folder, name), os.path.join(folder, name + ".toml")):
         if os.path.isfile(path):
@@ -44,9 +48,10 @@ def find_config(name, folder):
     sys.exit(f"not found: {name!r} (neither a file nor {os.path.relpath(folder, ROOT)}/{name}.toml)")
 
 
-def merge_chain(chain):
+def merge_chain(chain: Chain) -> Table:
     """One config from its files (each file listed once, where it first comes)."""
-    seen, cfg = set(), {}
+    seen: set[str] = set()
+    cfg: Table = {}
     for path, c in chain:
         if path not in seen:
             seen.add(path); cfg = merge(cfg, c)
@@ -55,7 +60,7 @@ def merge_chain(chain):
 
 # ============================== what the files say about one wallpaper ==============================
 SETTINGS = {"circles", "reconstructions", "title", "revision", "font", "graphic_colors"}   # [general] or [wallpaper]
-SECTIONS = {
+SECTIONS: dict[str, set[str] | None] = {
     "general": SETTINGS | {"language", "resolutions", "layouts", "output"},
     "wallpaper": SETTINGS | {"name", "graphic", "tag", "extras", "texts", "colors"},
     "colors": None, "layout": None, "layout_ultrawide": None,        # checked by Palette / check_layout
@@ -72,7 +77,7 @@ class Palette:
     details: str                 # inner lines of the graphic
 
     @classmethod
-    def from_table(cls, table, where):
+    def from_table(cls, table: Table, where: str) -> Self:
         names = [f.name for f in fields(cls)]
         if set(table) - set(names):
             sys.exit(f"{where}: unknown colours {sorted(set(table) - set(names))} (colours: {', '.join(names)})")
@@ -90,17 +95,17 @@ class Screen:
     height: int
 
     @classmethod
-    def parse(cls, text):
+    def parse(cls, text: str) -> Self:
         m = re.fullmatch(r"(\d+)[xX](\d+)", str(text))
         if not m or 0 in (int(m[1]), int(m[2])):
             sys.exit(f"resolution {text!r}: WIDTHxHEIGHT, e.g. 3440x1440")
         return cls(int(m[1]), int(m[2]))
 
     @property
-    def ultrawide(self):         # the top-left corner stays empty there – a desktop widget sits there
+    def ultrawide(self) -> bool:         # the top-left corner stays empty there – a desktop widget sits there
         return self.width / self.height > 2
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.width}x{self.height}"
 
 
@@ -129,9 +134,9 @@ class WallpaperSpec:
     tag: str
     graphic_colors: int = 3
     extras: tuple[ExtraHint, ...] = ()
-    texts: dict[str, WallpaperTexts] = field(default_factory=dict)
+    texts: dict[str, WallpaperTexts] = field(default_factory=dict[str, WallpaperTexts])
 
-    def texts_in(self, language):
+    def texts_in(self, language: str) -> WallpaperTexts:
         return self.texts.get(language, WallpaperTexts())
 
 
@@ -147,13 +152,13 @@ class RenderSettings:
 @dataclass(frozen=True)
 class Overrides:
     """What the command line sets over the files."""
-    colors: dict[str, str] = field(default_factory=dict)
+    colors: dict[str, str] = field(default_factory=dict[str, str])
     circles: int | None = None
     title: str | None = None
     languages: list[str] | None = None
     resolutions: list[str] | None = None
     output: str | None = None
-    modules: dict[str, dict] = field(default_factory=dict)     # --hide / --show
+    modules: dict[str, Table] = field(default_factory=dict[str, Table])     # --hide / --show
 
 
 @dataclass(frozen=True)
@@ -162,43 +167,43 @@ class Job:
     spec: WallpaperSpec
     settings: RenderSettings
     palette: Palette
-    layers: list[tuple[dict, bool]]   # layout tables in order, (table, ultrawide only)
+    layers: list[tuple[Table, bool]]  # layout tables in order, (table, ultrawide only)
     languages: tuple[str, ...]
     screens: tuple[Screen, ...]
     output: str                       # folder; "{resolution}" is replaced, e.g. ../3440x1440
     suffix: str = ""                  # after the wallpaper name in the file name (the layout)
 
-    def file_name(self, language, screen):
+    def file_name(self, language: str, screen: Screen) -> str:
         return f"fourier-{self.spec.name}{self.suffix}-{language}_{screen}.png"
 
 
-def _check(value, ok, where, what):
+def _check(value: Any, ok: Callable[[Any], object], where: str, what: str) -> Any:
     if not ok(value):
         sys.exit(f"{where} = {value!r}: {what}")
     return value
 
 
-def _whole(n):
+def _whole(n: object) -> bool:
     return isinstance(n, int) and not isinstance(n, bool)
 
 
-def _strings(v):
-    return isinstance(v, list) and all(isinstance(s, str) for s in v)
+def _strings(v: object) -> bool:
+    return is_list(v) and all(isinstance(s, str) for s in v)
 
 
-def check_file(path, cfg):
+def check_file(path: str, cfg: Table) -> None:
     """Unknown sections and keys of one config file."""
     for section, table in cfg.items():
         if section not in SECTIONS:
             sys.exit(f"{path}: unknown section [{section}] (sections: {', '.join(SECTIONS)})")
-        if not isinstance(table, dict):
+        if not is_table(table):
             sys.exit(f"{path}: {section} must be a table ([{section}])")
         allowed = SECTIONS[section]
         if allowed is not None and set(table) - allowed:
             sys.exit(f"{path}: [{section}] unknown keys {sorted(set(table) - allowed)} (keys: {', '.join(sorted(allowed))})")
 
 
-def load_job(chain, suffix, overrides):
+def load_job(chain: Chain, suffix: str, overrides: Overrides) -> Job:
     """A Job from the files of one wallpaper (defaults, the wallpaper, the layout) and the command line.
     A setting in [wallpaper] wins over the same one in [general]."""
     for path, c in chain:
@@ -209,27 +214,27 @@ def load_job(chain, suffix, overrides):
         sys.exit(f"{where}: no [wallpaper] table")
     general, t = cfg.get("general", {}), cfg["wallpaper"]
 
-    def get(key, default):
+    def get(key: str, default: Any) -> Any:
         return t.get(key, general.get(key, default))
 
     for key in ("name", "graphic", "tag"):
         if key not in t:
             sys.exit(f"{where}: [wallpaper] {key} is missing (name, graphic and tag are required)")
         _check(t[key], lambda v: isinstance(v, str) and v, f"[wallpaper] {key}", "a text")
-    extras = []
-    for i, e in enumerate(_check(get("extras", []), lambda v: isinstance(v, list), "extras", "a list of { x, y, type }")):
+    extras: list[ExtraHint] = []
+    for i, e in enumerate(_check(get("extras", []), is_list, "extras", "a list of { x, y, type }")):
         at = f"extras[{i}]"
-        if not isinstance(e, dict) or set(e) - {"x", "y", "type"} or not {"x", "y"} <= set(e):
+        if not is_table(e) or set(e) - {"x", "y", "type"} or not {"x", "y"} <= set(e):
             sys.exit(f"{at} = {e!r}: {{ x = …, y = …, type = \"shape\" | \"circle\" }}")
         for k in ("x", "y"):
             _check(e[k], lambda v: isinstance(v, (int, float)) and 0 <= v <= 1, f"{at}.{k}", "a fraction of the canvas, 0…1")
         _check(e.get("type", "shape"), lambda v: v in ("shape", "circle"), f"{at}.type", '"shape" or "circle"')
         extras.append(ExtraHint(float(e["x"]), float(e["y"]), e.get("type", "shape")))
-    texts = {}
-    for language, tx in _check(get("texts", {}), lambda v: isinstance(v, dict), "texts", "a table per language").items():
+    texts: dict[str, WallpaperTexts] = {}
+    for language, tx in _check(get("texts", {}), is_table, "texts", "a table per language").items():
         at = f"[wallpaper.texts.{language}]"
         allowed = {f.name for f in fields(WallpaperTexts)}
-        if not isinstance(tx, dict) or set(tx) - allowed:
+        if not is_table(tx) or set(tx) - allowed:
             sys.exit(f"{at}: keys {', '.join(sorted(allowed))}")
         for k, v in tx.items():
             _check(v, lambda s: isinstance(s, str), f"{at} {k}", "a text")
@@ -241,7 +246,7 @@ def load_job(chain, suffix, overrides):
 
     d = RenderSettings()
     reconstructions = _check(get("reconstructions", list(d.reconstructions)),
-                             lambda v: isinstance(v, list) and v and all(_whole(n) and n >= 0 for n in v),
+                             lambda v: is_list(v) and v and all(_whole(n) and n >= 0 for n in v),
                              "reconstructions", "a non-empty list of whole numbers ≥ 0")
     settings = RenderSettings(
         circles=_check(overrides.circles if overrides.circles is not None else get("circles", d.circles),

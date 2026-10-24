@@ -10,7 +10,7 @@ from .modules import MODULE_NAMES
 from .render import generate
 
 
-def main():
+def main() -> None:
     ap = argparse.ArgumentParser(description="Fourier wallpaper generator: epicycles draw the outline of an SVG graphic.",
                                  epilog="config.toml holds the defaults; a wallpaper (-c) and a layout (-L) override them. "
                                         "Without -c: every wallpaper in configs/ (with -g: none). "
@@ -37,7 +37,7 @@ def main():
 
     modules = {m: {"enabled": False} for m in args.hide} | {m: {"enabled": True} for m in args.show}
     check_layout(modules, "--hide/--show")
-    colors = {}
+    colors: dict[str, str] = {}
     for kv in args.color:
         key, sep, val = kv.partition("=")
         if not sep:

@@ -1,12 +1,12 @@
 """Grid of the sheet (it has no box)."""
-from .base import Module, RenderContext
+from .base import Box, Module, RenderContext
 
 
 class Grid(Module):
     name = "grid"
     box = ""
 
-    def draw(self, ctx: RenderContext, box):
+    def draw(self, ctx: RenderContext, box: Box) -> None:
         b, S, W, H = ctx.sheet.b, ctx.sheet.S, ctx.sheet.W, ctx.sheet.H
         minor, major = 24 * S, 120 * S
         b.set_line_width(1)

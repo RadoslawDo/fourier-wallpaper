@@ -5,7 +5,8 @@ import numpy as np
 
 from ..canvas import col
 from ..graphic import Circle
-from .base import Module, Option, RenderContext
+from ..series import Complexes, Floats
+from .base import Box, Module, Option, RenderContext
 
 
 class Drawing(Module):
@@ -15,7 +16,7 @@ class Drawing(Module):
         "align": Option("center", lambda v: v in ("left", "center", "right"), '"left", "center" or "right"'),
     }
 
-    def draw(self, ctx: RenderContext, box):
+    def draw(self, ctx: RenderContext, box: Box) -> None:
         sh, b, S, k, f, lang = ctx.sheet, ctx.sheet.b, ctx.sheet.S, ctx.palette, ctx.series, ctx.lang
         ACCENT, ACCENT2, BG, LINES = k.accent, k.accent2, k.background, k.lines
         OUTLINE, extras, cn = ctx.shape.outline, ctx.shape.extras, f.cn
@@ -80,7 +81,8 @@ class Drawing(Module):
                 sh.disc(x0, y0, 2.6 * S, col(ACCENT2)); sh.disc(ex, ey, 5 * S, col(ACCENT), glow=True)
             else:
                 ce = f.fourier(e.points, 512)
-                ell = lambda t: ce[0] + ce[1] * np.exp(2j * np.pi * t) + ce[-1] * np.exp(-2j * np.pi * t)
+                def ell(t: Floats) -> Complexes:
+                    return ce[0] + ce[1] * np.exp(2j * np.pi * t) + ce[-1] * np.exp(-2j * np.pi * t)
                 tt = np.linspace(0, 1, 400)
                 sh.poly([Z(v) for v in ell(tt)], col(LINES), 1.2 * S, close=True)
                 sh.poly([Z(v) for v in ell(tt * done)], col(ACCENT), 3.2 * S, glow=True)

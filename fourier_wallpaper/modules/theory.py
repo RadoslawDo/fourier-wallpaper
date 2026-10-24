@@ -1,14 +1,14 @@
 """Theory (h is not used – the text sets the height)."""
 from ..graphic import Circle, Curve
 from ..texts import plural
-from .base import Module, RenderContext
+from .base import Box, Module, RenderContext
 
 
 class Theory(Module):
     name = "theory"
     box = "xyw"                      # the text sets the height
 
-    def draw(self, ctx: RenderContext, box):
+    def draw(self, ctx: RenderContext, box: Box) -> None:
         sh, S, lang, texts = ctx.sheet, ctx.sheet.S, ctx.lang, ctx.texts
         K = ctx.settings.circles
         TX, TW = box.x, box.w

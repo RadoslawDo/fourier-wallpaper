@@ -4,13 +4,14 @@ import math
 import numpy as np
 
 from ..canvas import col
-from .base import Module, RenderContext
+from ..graphic import Point
+from .base import Box, Module, RenderContext
 
 
 class Square(Module):
     name = "square"
 
-    def draw(self, ctx: RenderContext, box):
+    def draw(self, ctx: RenderContext, box: Box) -> None:
         sh, S, k, lang = ctx.sheet, ctx.sheet.S, ctx.palette, ctx.lang
         ACCENT, ACCENT2 = k.accent, k.accent2
         x, y0, w = box.x, box.y + 12 * S, box.w
@@ -21,7 +22,7 @@ class Square(Module):
         sh.frame(px, py, pw, ph)
         mid, amp = py + ph * 0.54, ph * 0.31
         sh.poly([(px, mid), (px + pw, mid)], (1, 1, 1, 0.08), 1 * S)
-        sq = []
+        sq: list[Point] = []
         for i in range(4):
             lvl = mid - amp * (1 if i % 2 == 0 else -1)
             sq += [(px + pw * i / 4, lvl), (px + pw * (i + 1) / 4, lvl)]

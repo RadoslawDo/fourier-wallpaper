@@ -6,24 +6,25 @@ import tomllib
 import cairo
 
 from .canvas import Sheet, col
-from .config import ROOT
+from .config import ROOT, Job, Screen
 from .graphic import analyze
 from .layout import layout
 from .modules import MODULES, RenderContext
 from .series import Series
+from .texts import Lang
 
 
 class Renderer:
     """One wallpaper at one resolution."""
 
-    def __init__(self, job, series, screen, language, lang):
+    def __init__(self, job: Job, series: Series, screen: Screen, language: str, lang: Lang):
         sheet = Sheet(screen.width, screen.height, job.palette, job.settings.font)
         self.ctx = RenderContext(sheet=sheet, palette=job.palette, series=series, shape=series.shape,
                                  settings=job.settings, spec=job.spec, texts=job.spec.texts_in(language), lang=lang,
                                  ultrawide=screen.ultrawide,
                                  boxes=layout(job.layers, screen.width, screen.height, sheet.S))
 
-    def render(self, path):
+    def render(self, path: str) -> None:
         sh, W, H = self.ctx.sheet, self.ctx.sheet.W, self.ctx.sheet.H
         b = sh.b
         # background: the sheet
@@ -39,7 +40,7 @@ class Renderer:
         sh.save(path)
 
 
-def generate(job):
+def generate(job: Job) -> None:
     """The files of one Job: every language × resolution."""
     series = Series(analyze(job.spec))
     for language in job.languages:

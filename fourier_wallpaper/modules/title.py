@@ -1,12 +1,12 @@
 """Title block (the author credit goes above it)."""
 from ..canvas import col
-from .base import Module, RenderContext
+from .base import Box, Module, RenderContext
 
 
 class Title(Module):
     name = "title"
 
-    def draw(self, ctx: RenderContext, box):
+    def draw(self, ctx: RenderContext, box: Box) -> None:
         sh, b, S, k, lang, st = ctx.sheet, ctx.sheet.b, ctx.sheet.S, ctx.palette, ctx.lang, ctx.settings
         tx, ty, tw_, th_ = box.x, box.y, box.w, box.h
         b.new_path(); b.set_source_rgba(0, 0, 0, 0.2); b.rectangle(tx, ty, tw_, th_); b.fill()

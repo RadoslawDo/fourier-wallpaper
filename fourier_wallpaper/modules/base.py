@@ -9,8 +9,18 @@ if TYPE_CHECKING:                    # only for the type checker – config impo
     from ..canvas import Sheet
     from ..config import Palette, RenderSettings, WallpaperSpec, WallpaperTexts
     from ..graphic import Shape
-    from ..layout import Box
     from ..series import Series
+
+
+@dataclass(frozen=True)
+class Box:
+    """Where a module goes, in px of the screen, and the values of all its options (defaults filled in)."""
+    x: float
+    y: float
+    w: float
+    h: float
+    scale: float
+    opts: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -32,15 +42,15 @@ class RenderContext:
 class Option:
     """One key of a module's table in [layout]: its default and what values it takes."""
     default: Any
-    ok: Callable[[Any], bool]
+    ok: Callable[[Any], object]
     what: str                        # the allowed values, for the error message
 
 
-def _number(v):
+def _number(v: object) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
-def _length(v):
+def _length(v: object) -> bool:
     if isinstance(v, str) and v.endswith("%"):
         try:
             float(v[:-1])

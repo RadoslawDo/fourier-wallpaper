@@ -1,5 +1,6 @@
 {
   "venvPath": ".",
   "venv": ".venv",
-  "typeCheckingMode": "standard"
+  "typeCheckingMode": "strict",
+  "reportConstantRedefinition": false
 }

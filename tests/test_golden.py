@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -21,7 +22,7 @@ GOLDEN = os.path.join(ROOT, "tests", "golden")
 RESOLUTIONS = ["640x400", "640x360", "860x360"]   # 16:10, 16:9, 21:9 (ultrawide: width > 2 × height)
 
 
-def names(folder):
+def names(folder: str) -> list[str]:
     return sorted(os.path.splitext(os.path.basename(p))[0] for p in glob.glob(os.path.join(ROOT, folder, "*.toml")))
 
 
@@ -34,7 +35,7 @@ CASES = [f"{res}/fourier-{w}{'' if layout == 'default' else '-' + layout}-{lang}
 
 
 @pytest.fixture(scope="session")
-def generated(tmp_path_factory, request):
+def generated(tmp_path_factory: pytest.TempPathFactory, request: pytest.FixtureRequest) -> Path:
     """All the wallpapers, generated once; returns the folder they are in (or tests/golden with --update-golden)."""
     out = tmp_path_factory.mktemp("wallpapers")
     for w in WALLPAPERS:
@@ -51,7 +52,7 @@ def generated(tmp_path_factory, request):
 
 
 @pytest.mark.parametrize("case", CASES)
-def test_golden(generated, case):
+def test_golden(generated: Path, case: str) -> None:
     reference = os.path.join(GOLDEN, case)
     assert os.path.exists(reference), f"no reference image {reference} – run: pytest --update-golden"
     expected = np.asarray(Image.open(reference).convert("RGB")).astype(int)
@@ -62,7 +63,7 @@ def test_golden(generated, case):
                              f"generated image: {os.path.join(generated, case)}")
 
 
-def test_no_stale_references():
+def test_no_stale_references() -> None:
     """Every reference image belongs to a current wallpaper × layout (removed ones must not linger)."""
     found = {os.path.relpath(p, GOLDEN) for p in glob.glob(os.path.join(GOLDEN, "*", "*.png"))}
     assert found == set(CASES), f"extra: {sorted(found - set(CASES))}, missing: {sorted(set(CASES) - found)}"

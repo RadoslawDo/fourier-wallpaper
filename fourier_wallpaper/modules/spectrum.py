@@ -3,13 +3,13 @@ import math
 
 
 from ..canvas import col
-from .base import Module, RenderContext
+from .base import Box, Module, RenderContext
 
 
 class Spectrum(Module):
     name = "spectrum"
 
-    def draw(self, ctx: RenderContext, box):
+    def draw(self, ctx: RenderContext, box: Box) -> None:
         sh, S, k, lang, texts, cn = ctx.sheet, ctx.sheet.S, ctx.palette, ctx.lang, ctx.texts, ctx.series.cn
         x, y0, w = box.x, box.y + 12 * S, box.w
         sh.header(lang["spectrum_header"], x, y0, w)

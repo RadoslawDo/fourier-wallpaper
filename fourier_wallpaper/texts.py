@@ -1,7 +1,10 @@
 """Helpers for the texts from languages/<code>.toml."""
+from typing import Any
+
+Lang = dict[str, Any]                # languages/<code>.toml
 
 
-def plural(n, lang):
+def plural(n: int, lang: Lang) -> str:
     """The word "circle" after a number, by the language's plural rule."""
     forms = lang["circle"]
     if lang["plural_rule"] == "pl":

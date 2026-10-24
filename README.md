@@ -73,7 +73,7 @@ Building pycairo needs the cairo headers (on Arch they come with the `cairo` pac
 | File | Contents |
 |---|---|
 | `fourier.py` | starts the program |
-| `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `graphic.py` (SVG → outline and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (drawing one wallpaper and generating the files), `texts.py`; `modules/` – one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
+| `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `graphic.py` (SVG → outline and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (drawing one wallpaper and generating the files), `texts.py`, `tables.py` (TOML values for the type checker); `modules/` – one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
 | `tests/` | the golden-image test and its reference images (see [Tests](#tests)) |
 | `config.toml` | the defaults: resolutions, languages, layouts to make, colours, title, number of circles, layout of the modules |
 | `configs/<name>.toml` | one wallpaper each: the graphic, its texts and anything it overrides (keys described in `cachyos.toml`) |
@@ -221,6 +221,13 @@ at the new images and accept them:
 The references also depend on the fonts and on the cairo, librsvg and OpenCV builds, so they may
 need updating after a system update. At this small size, changes below about a tenth of a pixel
 can go unnoticed.
+
+The code is fully type-annotated and checked with basedpyright in strict mode (`pyrightconfig.json`;
+Zed uses the same settings):
+
+```sh
+uvx basedpyright
+```
 
 ## Licence
 
