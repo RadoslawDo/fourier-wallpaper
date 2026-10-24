@@ -89,8 +89,9 @@ each command can be tried as it is.
   spectrum shows the largest one.
 - **Inner lines:** the boundaries between regions of different colour. Colours are found by
   k-means; `graphic_colors` is how many colours to split the graphic into.
-- **Small shapes next to the outline** (e.g. the dots of a logo) are found automatically.
-- **Small shapes inside** (e.g. pupils) must be pointed to in `extras`. Give each position as a
+- **Small shapes next to the outline** (e.g. the dots of a logo) are found automatically, and so are
+  **small round holes** in it (transparent, like the "eye" of the Gentoo signet).
+- **Small shapes inside** in another colour (e.g. pupils) must be pointed to in `extras`. Give each position as a
   fraction of the width and height of the whole SVG canvas.
   - A circle is drawn by 1 term, an ellipse by 2 (n = 1 and n = −1).
   - `type = "circle"` finds the largest disc of that colour near the point. Use it when the shape

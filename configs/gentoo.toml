@@ -10,11 +10,11 @@ tag = "GENTOO"
 graphic_colors = 3
 [wallpaper.texts.en]
 noun = "Gentoo signet"
-closing = "The signet is a smooth, rounded shape with one notch – a few circles already give its form, and the notch appears once the higher terms are added (right-hand column)."
+closing = "The signet is a smooth, rounded shape with one notch – a few circles already give its form, and the notch appears once the higher terms are added (right-hand column). The hole in it is an ellipse: exactly two terms."
 spectrum = "smooth shape – the spectrum falls off quickly"
 author = "Gentoo signet © Gentoo Foundation, L. A. Rolland, CC BY-SA 2.5"
 [wallpaper.texts.pl]
 noun = "sygnetu Gentoo"
-closing = "Sygnet to gładki, zaokrąglony kształt z jednym wcięciem – już kilka okręgów oddaje jego formę, a wcięcie pojawia się po dodaniu wyższych składników (kolumna po prawej)."
+closing = "Sygnet to gładki, zaokrąglony kształt z jednym wcięciem – już kilka okręgów oddaje jego formę, a wcięcie pojawia się po dodaniu wyższych składników (kolumna po prawej). Otwór w nim to elipsa: dokładnie dwa składniki."
 spectrum = "gładki kształt – widmo szybko maleje"
 author = "Sygnet Gentoo © Gentoo Foundation, L. A. Rolland, CC BY-SA 2.5"

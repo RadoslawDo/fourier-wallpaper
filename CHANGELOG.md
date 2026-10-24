@@ -8,6 +8,12 @@ Versions are numbered MAJOR.MINOR.PATCH ([semantic versioning](https://semver.or
 
 Each version is tagged `v<version>` in git. `python3 fourier.py --version` shows the installed one.
 
+## Unreleased
+
+- Small round holes in a graphic (transparent, like the "eye" of the Gentoo signet) are drawn as
+  small shapes – before, they were left out.
+- The README previews (`recipes/github-examples.toml`), each in another palette.
+
 ## 1.0.0 – 2026-10-24
 
 The first public version.

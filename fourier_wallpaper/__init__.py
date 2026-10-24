@@ -5,7 +5,8 @@ the |cₙ| spectrum of the outline and reconstructions with a growing number of 
 From the graphic the program takes:
   - the outline – the outer contour of the whole graphic (drawn by a chain of 2K+1 circles),
   - inner lines – boundaries between regions of different colour (k-means on colours, graphic_colors),
-  - small shapes – separate ones next to the outline (e.g. logo dots) are found automatically,
+  - small shapes – separate ones next to the outline (e.g. logo dots) and small round holes in it are
+    found automatically,
     ones inside (e.g. pupils) are pointed to in the config; a circle is drawn by 1 term,
     an ellipse by 2 (n = 1 and n = −1).
 

@@ -157,11 +157,12 @@ tag = "GHOST"
 # thin lines inside the outline. 1 = none; for a one-colour logo use 1.
 graphic_colors = 2
 
-# Small shapes INSIDE the outline (eyes, dots) are not found by themselves – point to each one:
+# Small shapes INSIDE the outline in another colour (eyes, dots) are not found by themselves – point to each one:
 # x, y = its centre as a fraction (0…1) of the width and height of the SVG canvas, and type:
 #   "shape"  – the whole one-colour shape there (a circle or an ellipse, drawn by one or two vectors)
 #   "circle" – the largest disc of that colour there (when the shape merges with other lines)
-# Separate small shapes OUTSIDE the outline (like the dots of a logo) are found automatically.
+# Separate small shapes OUTSIDE the outline (like the dots of a logo) and small round transparent holes
+# in it are found automatically.
 extras = [{ x = 0.35, y = 0.4167, type = "shape" }, { x = 0.65, y = 0.4167, type = "shape" }]
 # extras = []
 

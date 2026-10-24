@@ -96,6 +96,12 @@ def classify(c: MatLike) -> Circle | Curve:
     return Curve(as_pts(c, 0.5))
 
 
+def is_ellipse(c: MatLike) -> bool:
+    """Fills the ellipse fitted to it (a circle or an ellipse, not a sliver)."""
+    _, (w, h), _ = cv2.fitEllipse(c)
+    return cv2.contourArea(c) > 0.9 * math.pi * w * h / 4
+
+
 def analyze(spec: WallpaperSpec) -> Shape:
     """The outline, inner lines and small shapes of the wallpaper's graphic (a WallpaperSpec)."""
     colors = spec.graphic_colors
@@ -125,8 +131,13 @@ def analyze(spec: WallpaperSpec) -> Shape:
         m = ((labels == k) & a & (inside > 0)).astype(np.uint8)
         m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
         details += [as_pts(c) for c in contours(m, cv2.RETR_CCOMP)]
-    # small shapes: separate ones next to the outline and the ones pointed to in the config
-    extras: list[Circle | Curve] = [classify(c) for c in outer[spec.outlines:] if cv2.contourArea(c) > 3e-4 * cv2.contourArea(main)]
+    # small shapes: separate ones next to the outline, small round holes in it (the "eye" of the Gentoo signet;
+    # not large holes, like the inside of a line drawing, nor gaps between its lines) and the ones pointed to
+    # in the config
+    big = cv2.contourArea(main)
+    extras: list[Circle | Curve] = [classify(c) for c in outer[spec.outlines:] if cv2.contourArea(c) > 3e-4 * big]
+    extras += [classify(c) for c in contours((inside > 0) & ~a, cv2.RETR_EXTERNAL)
+               if 3e-4 * big < cv2.contourArea(c) < 1e-2 * big and is_ellipse(c)]
     for e in spec.extras:
         x, y = int(e.x * w), int(e.y * h)
         same: npt.NDArray[np.bool_] = (labels == labels[y, x]) & a
