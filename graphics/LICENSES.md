@@ -65,3 +65,9 @@ wallpaper, follow the graphic's licence as well.
   of the NixOS project; trademark questions go to the NixOS Foundation.
 - **Sharing a generated wallpaper:** credit the authors. The generated wallpaper shows the credit
   above the title block.
+
+## ghost.svg – ghost
+
+- **Source:** drawn for this project as the example graphic of the README ("Adding a graphic").
+- **Licence:** CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/) – public domain, no
+  credit needed.

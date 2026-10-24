@@ -1,0 +1,24 @@
+# Ghost – the example graphic from the README ("Adding a graphic"). Overrides ../config.toml
+# (the keys are described in cachyos.toml).
+
+[general]
+reconstructions = [1, 3, 8, 30]
+
+[wallpaper]
+name = "ghost"                       # in the file name: fourier-ghost-en_1920x1200.png
+graphic = "../graphics/ghost.svg"    # relative to this file
+tag = "GHOST"                        # on the title block
+graphic_colors = 2                   # the body and the eyes
+# the eyes are inside the outline, so they are pointed to: centres at (70, 100) and (130, 100)
+# on the 200 × 240 canvas of the SVG
+extras = [{ x = 0.35, y = 0.4167, type = "shape" }, { x = 0.65, y = 0.4167, type = "shape" }]
+
+[wallpaper.texts.en]
+noun = "ghost"                       # "The outline of the ghost is a closed curve…"
+closing = "A circle is exactly one term, so each eye of the ghost is drawn by a single vector. The round head comes out with a few circles; the wavy hem needs more (right-hand column)."
+spectrum = "a smooth curve with a few corners"
+
+[wallpaper.texts.pl]
+noun = "ducha"                       # in Polish in the genitive case
+closing = "Okrąg to dokładnie jeden składnik, dlatego każde oko ducha rysuje jeden wektor. Okrągła głowa wychodzi już z kilku okręgów, falisty dół wymaga więcej (kolumna po prawej)."
+spectrum = "gładka krzywa z kilkoma narożnikami"

@@ -164,6 +164,9 @@ only has `[layout]` still beats the `[layout_ultrawide]` from `config.toml`.
 
 ## Adding a graphic
 
+The steps below use `graphics/ghost.svg` and `configs/ghost.toml`, which are in the repository, so
+each command can be tried as it is.
+
 1. **Prepare the SVG** and put it in `graphics/`.
    - The background must be **transparent**. The outline is found from the opaque pixels, so a
      background rectangle would make the outline a rectangle.
@@ -198,7 +201,7 @@ only has `[layout]` still beats the `[layout_ultrawide]` from `config.toml`.
    noun = "ghost"                       # "The outline of the ghost is a closed curve…"
    closing = "…"                        # last paragraph of the theory
    spectrum = "…"                       # note under the spectrum header
-   author = "Ghost: Jane Doe, CC BY 4.0"   # credit above the title block
+   # author = "Ghost: …, CC BY 4.0"    # credit above the title block, if the licence asks for it
 
    [wallpaper.texts.pl]
    noun = "ducha"                       # in Polish in the genitive case
@@ -208,8 +211,8 @@ only has `[layout]` still beats the `[layout_ultrawide]` from `config.toml`.
    reconstructions = [1, 4, 12, 40]
    ```
 
-   The keys are described in `configs/cachyos.toml`, and `configs/tux.toml` and
-   `configs/gnu.toml` are complete examples.
+   The keys are described in `configs/cachyos.toml`. `configs/ghost.toml` is this example in
+   full, and `configs/tux.toml` and `configs/gnu.toml` are larger ones.
 
 4. **Tune it** while checking the result with `python3 fourier.py configs/ghost.toml -r 1920x1200 -l en -o /tmp/fourier-test`:
    - **Inner lines:** too many or noisy → lower `graphic_colors`. Some missing → raise it.
@@ -298,3 +301,4 @@ The graphics in `graphics/` keep their own licences. See [graphics/LICENSES.md](
 | `debian.svg` | Debian Open Use Logo © Software in the Public Interest. LGPL-3+ or CC BY-SA 3.0 |
 | `gentoo.svg` | Gentoo signet © Gentoo Foundation, Lennart Andre Rolland. CC BY-SA 2.5; also a Gentoo trademark |
 | `nixos.svg` | NixOS snowflake by Simon Frankau and Tim Cuthbertson. CC BY 4.0 |
+| `ghost.svg` | drawn for this project as the example graphic. CC0 1.0 (public domain) |
