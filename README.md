@@ -79,6 +79,12 @@ How to prepare the graphic: [Adding a graphic](docs/adding-a-graphic.md).
 - [How to…](docs/how-to.md) – run the examples, change the resolution or the file format, add a language.
 - [Development](docs/development.md) – the files of the project, the tests, type checking.
 
+## Versions
+
+`python3 fourier.py --version` shows the version; [CHANGELOG.md](CHANGELOG.md) lists what each one
+changed. A new major version (2.0.0…) means that config files or recipes need changing – the
+changelog then says how.
+
 ## Licence
 
 The code and the configuration and language files are under the [MIT licence](LICENSE).

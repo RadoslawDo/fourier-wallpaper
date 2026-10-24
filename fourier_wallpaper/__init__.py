@@ -21,3 +21,7 @@ Usage:
   python3 fourier.py configs/tux.toml -l pl   one wallpaper, in Polish
   python3 fourier.py -g drawing.svg -r 2560x1440 -t "MY // WALLPAPER" --color accent=#FF5500
 """
+
+# MAJOR.MINOR.PATCH (https://semver.org): MAJOR when a config file or recipe that worked before stops working,
+# MINOR for new features, PATCH for fixes; every version is listed in CHANGELOG.md and tagged v<version> in git
+__version__ = "1.0.0"

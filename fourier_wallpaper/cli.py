@@ -3,6 +3,7 @@ import argparse
 import os
 import sys
 
+from . import __version__
 from .canvas import FORMATS
 from .config import ROOT, Overrides, config_chain, find_config
 from .layout import check_layout
@@ -15,6 +16,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Fourier wallpaper generator: epicycles draw the outline of an SVG graphic.",
                                  epilog="config.toml holds the defaults; a recipe says which wallpapers to make, in which "
                                         "layouts, languages and resolutions. The options below override the recipe.")
+    ap.add_argument("--version", action="version", version=f"fourier-wallpaper {__version__}")
     ap.add_argument("recipe", nargs="?", default="default",
                     help="a TOML file or the name of one in recipes/ (default: recipes/default.toml); "
                          "a wallpaper file (configs/…) makes just that wallpaper")

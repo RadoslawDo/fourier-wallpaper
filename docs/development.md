@@ -5,6 +5,7 @@
 | File | Contents |
 |---|---|
 | `fourier.py` | starts the program |
+| `CHANGELOG.md` | the versions; the number is `__version__` in `fourier_wallpaper/__init__.py` |
 | `fourier_wallpaper/` | the program: `cli.py` (command line), `config.py` (loading and merging the TOML files), `recipe.py` (recipes → jobs), `graphic.py` (SVG → outlines and small shapes), `series.py` (Fourier series), `layout.py` (module boxes), `canvas.py` (cairo drawing helpers), `render.py` (drawing one wallpaper and generating the files), `texts.py`, `tables.py` (TOML values for the type checker) |
 | `fourier_wallpaper/modules/` | one file per module (`grid.py`, `drawing.py`, `theory.py`…), each a `Module` subclass listed in `modules/__init__.py`, declaring its own layout keys in `options` |
 | `tests/` | the golden-image test with its reference images, the recipe tests and the output-format tests |
